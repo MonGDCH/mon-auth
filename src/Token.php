@@ -91,6 +91,27 @@ class Token
     }
 
     /**
+     * 设置aud, 接受者
+     *
+     * @param string $aud [description]
+     */
+    public function setAud(string $aud)
+    {
+        $this->payload['aud'] = $aud;
+        return $this;
+    }
+
+    /**
+     * 获取Aud
+     *
+     * @return [type] [description]
+     */
+    public function getAud()
+    {
+        return $this->payload['aud'] ?? null;
+    }
+
+    /**
      * 设置jti, web-token提供唯一标识
      *
      * @param string $jti [description]
@@ -133,7 +154,7 @@ class Token
     }
 
     /**
-     * 设置exp
+     * 设置exp, 有效时间
      *
      * @param int $exp [description]
      */
@@ -154,7 +175,7 @@ class Token
     }
 
     /**
-     * 设置nbf
+     * 设置nbf, 多少秒后生效
      *
      * @param int $nbf [description]
      */
@@ -191,7 +212,6 @@ class Token
      * @param  array       $payload 记录的数据集合
      * @param  string      $key     加密key
      * @param  string      $alg     加密算法
-     * @param  int|integer $exp     有效时间，0
      * @return [type]               [description]
      */
     public function create(string $key, string $alg = 'HS256', bool $clear = true)
@@ -251,7 +271,7 @@ class Token
         if(!$payload){
             throw new JwtException('invalid payload encoding', 7);
         }
-        $sign = json_decode($this->urlsafeB64Decode($crypt), true);
+        $sign = $this->urlsafeB64Decode($crypt);
         if(!$sign){
             throw new JwtException('invalid sign encoding', 8);
         }
@@ -261,6 +281,20 @@ class Token
         if($header['alg'] != $alg){
             throw new JwtException('algorithm not allowed', 9);
         }
+        // verfiy sign
+        if(!$this->verfiy("{$head}.{$body}", $sign, $key, $alg)){
+            throw new  JwtException('check sign faild', 10);
+        }
+        $now = time();
+        // 验证是否在有效期内
+        if(isset($payload['nbf']) && $payload['nbf'] > $now){
+            throw new JwtException('sign not active', 11);
+        }
+        if(isset($payload['exp']) && $payload['exp'] < $now){
+            throw new JwtException('sign expired', 12);
+        }
+
+        return $payload;
     }
 
     /**
@@ -313,7 +347,7 @@ class Token
         }
 
         list($type, $algorithm) = $this->algs[$alg];
-        switch($function)
+        switch($type)
         {
             case 'openssl':
                 $success = openssl_verify($info, $sign, $key, $algorithm);
@@ -323,10 +357,7 @@ class Token
                 elseif($success === 0){
                     return false;
                 }
-                throw new JwtException(
-                    'openssl error: ' . openssl_error_string(),
-                    4
-                );
+                throw new JwtException('openssl error: ' . openssl_error_string(), 4);
             case 'hash_hmac':
                 $hash = hash_hmac($algorithm, $info, $key, true);
                 return hash_equals($sign, $hash);
