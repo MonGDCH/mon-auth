@@ -2,7 +2,8 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use mon\auth\Token;
+use mon\auth\jwt\Token;
+use mon\auth\jwt\Payload;
 use mon\auth\exception\JwtException;
 
 try{
@@ -34,13 +35,14 @@ ehde/zUxo6UvS7UrBQIDAQAB
 EOD;
 
 	$token = new Token;
+	$build = new Payload;
 
-	$jwt = $token->setIss('abc')->setSub('def')->setAud('asdf')->create($privateKey, 'RS256');
+	$payload = $build->setIss('abc')->setSub('def')->setAud('asdf');
 
+	$jwt = $token->create($payload, $privateKey, 'RS256');
 	var_dump($jwt);
 
 	$data = $token->check($jwt, $publicKey, 'RS256');
-
 	var_dump($data);
 }
 catch (JwtException $e){

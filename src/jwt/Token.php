@@ -1,16 +1,23 @@
 <?php
-namespace mon\auth;
+namespace mon\auth\jwt;
 
-use mon\env\Config;
+use mon\auth\jwt\Payload;
 use mon\auth\exception\JwtException;
 
 /**
- * 类JWT权限控制
+ * JWT权限控制
  *
  * @version 1.0.0
  */
 class Token
 {
+    /**
+     * 单例实现
+     *
+     * @var [type]
+     */
+    protected static $instance;
+
     /**
      * 支持的加密方式
      *
@@ -18,218 +25,39 @@ class Token
      */
     protected $algs = [
         'HS256' => ['hash_hmac', 'SHA256'],
-        'HS512' => ['hash_hmac', 'SHA512'],
         'HS384' => ['hash_hmac', 'SHA384'],
+        'HS512' => ['hash_hmac', 'SHA512'],
         'RS256' => ['openssl', 'SHA256'],
         'RS384' => ['openssl', 'SHA384'],
         'RS512' => ['openssl', 'SHA512'],
     ];
 
     /**
-     * JWT生存时间
-     *
-     * @var integer
-     */
-    protected $exp = 0;
-
-    /**
-     * JWT启用时间
-     *
-     * @var integer
-     */
-    protected $nbf = 0;
-
-    /**
-     * JWT-payload
-     *
-     * @var array
-     */
-    protected $payload = [];
-
-    /**
-     * 设置iss, 签发者
-     *
-     * @param  string $issuer [description]
-     * @return [type]         [description]
-     */
-    public function setIss(string $issuer)
-    {
-        $this->payload['iss'] = $issuer;
-        return $this;
-    }
-
-    /**
-     * 获取iss
+     * 获取单例
      *
      * @return [type] [description]
      */
-    public function getIss()
+    public static function instance()
     {
-        return $this->payload['iss'] ?? null;
-    }
+        if(is_null(self::$instance)){
+            self::$instance = new self;
+        }
 
-    /**
-     * 设置sub, 所面向的用户
-     *
-     * @param  string $issuer [description]
-     * @return [type]         [description]
-     */
-    public function setSub(string $sub)
-    {
-        $this->payload['sub'] = $sub;
-        return $this;
-    }
-
-    /**
-     * 获取sub
-     *
-     * @return [type] [description]
-     */
-    public function getSub()
-    {
-        return $this->payload['sub'] ?? null;
-    }
-
-    /**
-     * 设置aud, 接受者
-     *
-     * @param string $aud [description]
-     */
-    public function setAud(string $aud)
-    {
-        $this->payload['aud'] = $aud;
-        return $this;
-    }
-
-    /**
-     * 获取Aud
-     *
-     * @return [type] [description]
-     */
-    public function getAud()
-    {
-        return $this->payload['aud'] ?? null;
-    }
-
-    /**
-     * 设置jti, web-token提供唯一标识
-     *
-     * @param string $jti [description]
-     */
-    public function setJti(string $jti)
-    {
-        $this->payload['jti'] = $jti;
-        return $this;
-    }
-
-    /**
-     * 获取jti
-     *
-     * @return [type] [description]
-     */
-    public function getJti()
-    {
-        return $this->payload['jti'] ?? null;
-    }
-
-    /**
-     * 设置ext, 扩展数据
-     *
-     * @param array $ext [description]
-     */
-    public function setExt(array $ext)
-    {
-        $this->payload['ext'] = $ext;
-        return $this;
-    }
-
-    /**
-     * 获取ext
-     *
-     * @return [type] [description]
-     */
-    public function getExt()
-    {
-        return $this->payload['ext'] ?? null;
-    }
-
-    /**
-     * 设置exp, 有效时间
-     *
-     * @param int $exp [description]
-     */
-    public function setExp(int $exp)
-    {
-        $this->exp = $exp;
-        return $this;
-    }
-
-    /**
-     * 获取exp
-     *
-     * @return [type] [description]
-     */
-    public function getExp()
-    {
-        return $this->exp;
-    }
-
-    /**
-     * 设置nbf, 多少秒后生效
-     *
-     * @param int $nbf [description]
-     */
-    public function setNbf(int $nbf)
-    {
-        $this->nbf = $nbf;
-        return $this;
-    }
-
-    /**
-     * 获取nbf
-     *
-     * @return [type] [description]
-     */
-    public function getNbf()
-    {
-        return $this->nbf;
-    }
-
-    /**
-     * 清空payload
-     *
-     * @return [type] [description]
-     */
-    public function clearPayload()
-    {
-        $this->payload = [];
-        return $this;
+        return self::$instance;
     }
 
     /**
      * 创建签名
      *
-     * @param  array       $payload 记录的数据集合
+     * @param  Payload     $obj     peyload实例
      * @param  string      $key     加密key
      * @param  string      $alg     加密算法
      * @return [type]               [description]
      */
-    public function create(string $key, string $alg = 'HS256', bool $clear = true)
+    public function create(Payload $obj, string $key, string $alg = 'HS256')
     {
-        if(empty($this->payload)){
-            throw new JwtException('payload is empty', 4);
-        }
         $header = ['typ' => 'JWT', 'alg' => $alg];
-        $payload = $this->payload;
-        $payload['iat'] = time();
-        // 设置启用时间
-        if($this->nbf > 0){
-            $payload['nbf'] = $payload['iat'] + $this->nbf;
-        }
-        // 设置有效时间
-        if($this->exp > 0){
-            $payload['exp'] = isset($payload['nbf']) ? ($payload['nbf'] + $this->exp) : ($payload['iat'] + $this->exp);
-        }
+        $payload = $obj->getData();
 
         $info = [];
         $info[] = $this->urlsafeB64Encode(json_encode($header, JSON_UNESCAPED_UNICODE));
@@ -241,11 +69,7 @@ class Token
         $info[] = $this->urlsafeB64Encode($sign);
         
         // 生成jwt
-        $jwt = implode('.', $info);
-        if($clear){
-            $this->clearPayload();
-        }
-        return $jwt;
+        return implode('.', $info);
     }
 
     /**
@@ -275,13 +99,14 @@ class Token
         if(!$sign){
             throw new JwtException('invalid sign encoding', 8);
         }
+        // 验证加密方式
         if(!isset($this->algs[$header['alg']])){
             throw new JwtException('not found alg', 1);
         }
         if($header['alg'] != $alg){
             throw new JwtException('algorithm not allowed', 9);
         }
-        // verfiy sign
+        // 验证签名
         if(!$this->verfiy("{$head}.{$body}", $sign, $key, $alg)){
             throw new  JwtException('check sign faild', 10);
         }
@@ -391,5 +216,15 @@ class Token
             $input .= str_repeat('=', $padlen);
         }
         return base64_decode(strtr($input, '-_', '+/'));
+    }
+
+    /**
+     * 获取支持的加密方式
+     *
+     * @return [type] [description]
+     */
+    public function getAlgs()
+    {
+        return array_keys($this->algs);
     }
 }

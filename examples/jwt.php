@@ -2,19 +2,26 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use mon\auth\Token;
+use mon\auth\jwt\Token;
+use mon\auth\jwt\Payload;
 use mon\auth\exception\JwtException;
 
 try{
+	// 加密密钥
 	$key = 'aaaaaaa';
+	// 加密算法
+	$alg = 'HS256';
+	$build = new Payload;
 	$token = new Token;
 
-	$jwt = $token->setIss('abc')->setSub('def')->setExt(['a' => '123'])->setExp(3600)->setAud('asdf')->create($key);
-
+	// 构建payload
+	$payload = $build->setIss('abc')->setSub('def')->setExt(['a' => '123'])->setExp(3600)->setAud('127.0.0.1');
+	// 创建jwt
+	$jwt = $token->create($payload, $key, $alg);
 	var_dump($jwt);
 
-	$data = $token->check($jwt, $key);
-
+	// 验证jwt
+	$data = $token->check($jwt, $key, $alg);
 	var_dump($data);
 }
 catch (JwtException $e){
