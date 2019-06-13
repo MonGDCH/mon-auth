@@ -17,8 +17,9 @@
     ],
     "require": {
         "php": ">=7.0.0",
-        "mongdch/mon-util": "dev-master",
-        "mongdch/mon-env": "^1.0"
+        "mongdch/mon-env": "^1.0",
+        "mongdch/mon-util": "^1.0",
+        "mongdch/mon-orm": "^2.1"
     },
     "autoload": {
         "psr-4": {

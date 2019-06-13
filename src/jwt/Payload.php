@@ -13,7 +13,7 @@ use mon\auth\exception\JwtException;
  */
 class Payload implements ArrayAccess
 {
-	/**
+    /**
      * JWT生存时间
      *
      * @var integer
@@ -190,17 +190,17 @@ class Payload implements ArrayAccess
      */
     public function getData()
     {
-        if(empty($this->data)){
+        if (empty($this->data)) {
             throw new JwtException('payload is empty', 4);
         }
         $payload = $this->data;
         $payload['iat'] = time();
         // 设置启用时间
-        if($this->nbf > 0){
+        if ($this->nbf > 0) {
             $payload['nbf'] = $payload['iat'] + $this->nbf;
         }
         // 设置有效时间
-        if($this->exp > 0){
+        if ($this->exp > 0) {
             $payload['exp'] = isset($payload['nbf']) ? ($payload['nbf'] + $this->exp) : ($payload['iat'] + $this->exp);
         }
 
@@ -215,7 +215,7 @@ class Payload implements ArrayAccess
      */
     public function __set(string $key, $value)
     {
-    	$this->data[$key] = $value;
+        $this->data[$key] = $value;
     }
 
     /**
