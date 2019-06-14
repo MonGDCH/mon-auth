@@ -18,7 +18,13 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/MonGDCH/mon-env/zipball/f0fba906a24c0bdbe26a1d923054f82c3b9256b7",
                 "reference": "f0fba906a24c0bdbe26a1d923054f82c3b9256b7",
-                "shasum": ""
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
             },
             "require": {
                 "php": ">=7.0.0"
@@ -59,7 +65,13 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/MonGDCH/mon-orm/zipball/80fc53eb7efc32a449267c521c8a0137f5b1ee40",
                 "reference": "80fc53eb7efc32a449267c521c8a0137f5b1ee40",
-                "shasum": ""
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
             },
             "require": {
                 "php": ">=5.6.0"
@@ -91,17 +103,23 @@
         },
         {
             "name": "mongdch/mon-util",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/MonGDCH/mon-util.git",
-                "reference": "99431d93f410e9960c421aec225bd876d4b2c196"
+                "reference": "8d6e4af906474b47546d85862deedb33a611ad35"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MonGDCH/mon-util/zipball/99431d93f410e9960c421aec225bd876d4b2c196",
-                "reference": "99431d93f410e9960c421aec225bd876d4b2c196",
-                "shasum": ""
+                "url": "https://api.github.com/repos/MonGDCH/mon-util/zipball/8d6e4af906474b47546d85862deedb33a611ad35",
+                "reference": "8d6e4af906474b47546d85862deedb33a611ad35",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
             },
             "require": {
                 "php": ">=5.6.0"
@@ -127,7 +145,7 @@
                 "php",
                 "utils"
             ],
-            "time": "2019-04-18T10:19:55+00:00"
+            "time": "2019-06-14T02:44:10+00:00"
         }
     ],
     "packages-dev": [],
