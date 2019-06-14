@@ -2,7 +2,6 @@
 namespace mon\auth\rbac\model;
 
 use mon\util\Instance;
-use mon\auth\rbac\Validate;
 use mon\auth\rbac\model\Comm;
 
 /**
@@ -20,36 +19,6 @@ class Access extends Comm
     protected $table = 'mon_auth_access';
 
     /**
-     * 新增自动写入字段
-     *
-     * @var array
-     */
-    protected $insert = ['create_time', 'update_time'];
-
-    /**
-     * 更新自动写入字段
-     *
-     * @var array
-     */
-    protected $update = ['update_time'];
-
-    /**
-     * 验证器
-     *
-     * @var [type]
-     */
-    protected $validate;
-
-    /**
-     * 构造方法
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->validate = new Validate;
-    }
-
-    /**
      * 创建组别用户关联
      *
      * @param array $option
@@ -63,8 +32,7 @@ class Access extends Comm
             return false;
         }
 
-        $exists = $this->where('group_id', $option['gid'])->where('uid', $option['uid'])->find();
-        if ($exists) {
+        if ($this->where('group_id', $option['gid'])->where('uid', $option['uid'])->get()->isEmpty()) {
             $this->error = '用户已关联，请勿重复关联';
             return false;
         }

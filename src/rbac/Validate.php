@@ -20,6 +20,12 @@ class Validate extends Vali
         'pid'           => 'required|int|min:0',
         'rules'         => 'required|str|rules',
         'name'          => 'required|str',
+        'mark'          => 'required|str',
+        'description'   => 'required|str',
+        'offset'        => 'int|min:0',
+        'limit'         => 'int|min:1',
+        'start_time'    => 'timestamp',
+        'end_time'      => 'timestamp',
     ];
 
     /**
@@ -34,6 +40,10 @@ class Validate extends Vali
         'pid'           => '上级ID格式错误',
         'rules'         => '规则组格式错误',
         'name'          => '名称格式错误',
+        'mark'          => '规则标志格式错误',
+        'description'   => '附加信息格式错误',
+        'offset'        => 'offset格式错误',
+        'limit'         => 'limit格式错误',
     ];
 
     /**
@@ -50,6 +60,8 @@ class Validate extends Vali
         'group_add'     => ['pid', 'name', 'rules'],
         // 修改角色组别信息
         'group_modify'  => ['idx', 'pid', 'name', 'rules'],
+        // 增加规则
+        'rule_add'      => ['mark', 'pid', 'name', 'description'],
     ];
 
     /**

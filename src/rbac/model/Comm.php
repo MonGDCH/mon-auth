@@ -3,6 +3,7 @@ namespace mon\auth\rbac\model;
 
 use mon\orm\Model;
 use mon\env\Config;
+use mon\auth\rbac\Validate;
 
 /**
  * 模型基类
@@ -10,11 +11,33 @@ use mon\env\Config;
 class Comm extends Model
 {
     /**
+     * 新增自动写入字段
+     *
+     * @var array
+     */
+    protected $insert = ['create_time', 'update_time'];
+
+    /**
+     * 更新自动写入字段
+     *
+     * @var array
+     */
+    protected $update = ['update_time'];
+
+    /**
+     * 验证器
+     *
+     * @var [type]
+     */
+    protected $validate;
+
+    /**
      * 构造方法
      */
     public function __construct()
     {
         $this->config = Config::instance()->get('mon_auth.database', []);
+        $this->validate = new Validate;
     }
 
     /**

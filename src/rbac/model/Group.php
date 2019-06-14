@@ -2,7 +2,6 @@
 namespace mon\auth\rbac\model;
 
 use mon\util\Instance;
-use mon\auth\rbac\Validate;
 use mon\auth\rbac\model\Comm;
 
 /**
@@ -20,36 +19,6 @@ class Group extends Comm
     protected $table = 'mon_auth_group';
 
     /**
-     * 新增自动写入字段
-     *
-     * @var array
-     */
-    protected $insert = ['create_time', 'update_time'];
-
-    /**
-     * 更新自动写入字段
-     *
-     * @var array
-     */
-    protected $update = ['update_time'];
-
-    /**
-     * 验证器
-     *
-     * @var [type]
-     */
-    protected $validate;
-
-    /**
-     * 构造方法
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->validate = new Validate;
-    }
-
-    /**
      * 获取角色组信息
      *
      * @param integer $gid
@@ -58,6 +27,18 @@ class Group extends Comm
     public function getInfo(int $gid)
     {
         return $this->where('id', $gid)->get();
+    }
+
+    /**
+     * 获取所有组别信息
+     *
+     * @return void
+     */
+    public function getList(array $option)
+    {
+        $offset = isset($option['offset']) ? intval($option['offset']) : 0;
+        $limit = isset($option['limit']) ? intval($option['limit']) : 10;
+
     }
 
     /**

@@ -2,7 +2,6 @@
 namespace mon\auth\rbac\model;
 
 use mon\util\Instance;
-use mon\auth\rbac\Validate;
 use mon\auth\rbac\model\Comm;
 
 /**
@@ -20,32 +19,28 @@ class Rule extends Comm
     protected $table = 'mon_auth_rule';
 
     /**
-     * 新增自动写入字段
+     * 获取规则信息
      *
-     * @var array
+     * @param integer $gid
+     * @return void
      */
-    protected $insert = ['create_time', 'update_time'];
-
-    /**
-     * 更新自动写入字段
-     *
-     * @var array
-     */
-    protected $update = ['update_time'];
-
-    /**
-     * 验证器
-     *
-     * @var [type]
-     */
-    protected $validate;
-
-    /**
-     * 构造方法
-     */
-    public function __construct()
+    public function getInfo(int $rule_id)
     {
-        parent::__construct();
-        $this->validate = new Validate;
+        return $this->where('id', $rule_id)->get();
+    }
+
+    /**
+     * 新增规则
+     *
+     * @param arrry $option
+     * @return void
+     */
+    public function add(arrry $option)
+    {
+        $check = $this->validate->scope('group_add')->data($option)->check();
+        if ($check !== true) {
+            $this->error = $check;
+            return false;
+        }
     }
 }
