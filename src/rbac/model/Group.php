@@ -39,6 +39,13 @@ class Group extends Comm
         $offset = isset($option['offset']) ? intval($option['offset']) : 0;
         $limit = isset($option['limit']) ? intval($option['limit']) : 10;
 
+        $list = $this->limit($offset * $limit, $limit)->select();
+        $count = $this->count('id');
+
+        return [
+            'list' => $list,
+            'count'=> $count
+        ];
     }
 
     /**

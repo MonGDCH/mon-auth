@@ -18,10 +18,11 @@ class Validate extends Vali
         'uid'           => 'required|int|min:1',
         'gid'           => 'required|int|min:1',
         'pid'           => 'required|int|min:0',
+        'status'        => 'required|in:0,1',
         'rules'         => 'required|str|rules',
         'name'          => 'required|str',
         'mark'          => 'required|str',
-        'description'   => 'required|str',
+        'description'   => 'str',
         'offset'        => 'int|min:0',
         'limit'         => 'int|min:1',
         'start_time'    => 'timestamp',
@@ -44,6 +45,7 @@ class Validate extends Vali
         'description'   => '附加信息格式错误',
         'offset'        => 'offset格式错误',
         'limit'         => 'limit格式错误',
+        'status'        => '状态参数错误'
     ];
 
     /**
@@ -62,6 +64,8 @@ class Validate extends Vali
         'group_modify'  => ['idx', 'pid', 'name', 'rules'],
         // 增加规则
         'rule_add'      => ['mark', 'pid', 'name', 'description'],
+        // 修改规则
+        'rule_modify'   => ['mark', 'pid', 'name', 'description', 'idx', 'status'],
     ];
 
     /**

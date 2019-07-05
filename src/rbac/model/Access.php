@@ -19,6 +19,19 @@ class Access extends Comm
     protected $table = 'mon_auth_access';
 
     /**
+     * 获取用户所在组别
+     *
+     * @param integer $uid
+     * @return void
+     */
+    public function getUserGroup(int $uid)
+    {
+        return $this->table('mon_auth_access a')->join('mon_auth_group b', 'a.group_id=b.id', 'left')
+                    ->field('a.uid, a.group_id, b.id, b.pid, b.name, b.rules')
+                    ->where('a.uid', $uid)->where('b.status', 1)->select();
+    }
+
+    /**
      * 创建组别用户关联
      *
      * @param array $option
