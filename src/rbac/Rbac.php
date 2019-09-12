@@ -24,11 +24,11 @@ class Rbac
      * 验证权限
      *
      * @param integer $uid      用户ID
-     * @param string $mark      规则标志位
+     * @param string  $mark     规则标志位
      * @param boolean $relation 如果为 true 表示满足任一条规则即通过验证;如果为 false 则表示需满足所有规则才能通过验证
      * @return void
      */
-    public function check(int $uid, string $mark, bool $relation = false)
+    public function check($uid, $mark, $relation = false)
     {
         // 获取用户需要验证的所有有效规则列表
         $authList = $this->getUserAuth($uid);
@@ -72,7 +72,7 @@ class Rbac
      * @param integer $uid
      * @return void
      */
-    public function getUserAuth(int $uid)
+    public function getUserAuth($uid)
     {
         static $_auths = array();
         if (isset($_auths[$uid])) {

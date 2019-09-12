@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-        "php": ">=7.0.0",
+        "php": ">=5.6.0",
         "mongdch/mon-env": "^1.0",
         "mongdch/mon-util": "^1.0",
         "mongdch/mon-orm": "^2.1"

@@ -1,4 +1,5 @@
 <?php
+
 namespace mon\auth\jwt;
 
 use mon\auth\jwt\Payload;
@@ -7,7 +8,7 @@ use mon\auth\exception\JwtException;
 /**
  * JWT权限控制
  *
- * @version 1.0.0
+ * @version 1.0.1 减低版本要求为5.6
  */
 class Token
 {
@@ -54,7 +55,7 @@ class Token
      * @param  string      $alg     加密算法
      * @return [type]               [description]
      */
-    public function create(Payload $obj, string $key, string $alg = 'HS256')
+    public function create($obj, $key, $alg = 'HS256')
     {
         $header = ['typ' => 'JWT', 'alg' => $alg];
         $payload = $obj->getData();
@@ -80,7 +81,7 @@ class Token
      * @param  string $alg 加密算法
      * @return [type]      [description]
      */
-    public function check(string $jwt, string $key, string $alg = 'HS256')
+    public function check($jwt, $key, $alg = 'HS256')
     {
         $ticket = explode('.', $jwt);
         if (count($ticket) != 3) {
@@ -130,7 +131,7 @@ class Token
      * @param  string $alg  加密方式
      * @return [type]       [description]
      */
-    public function sign(string $info, string $key, string $alg = 'HS256')
+    public function sign($info, $key, $alg = 'HS256')
     {
         if (!isset($this->algs[$alg])) {
             throw new JwtException('not found alg', 1);
@@ -163,7 +164,7 @@ class Token
      * @param  string $alg  加密方式
      * @return [type]       [description]
      */
-    public function verfiy(string $info, string $sign, string $key, string $alg = 'HS256')
+    public function verfiy($info, $sign, $key, $alg = 'HS256')
     {
         if (!isset($this->algs[$alg])) {
             throw new JwtException('not found alg', 1);
@@ -221,6 +222,6 @@ class Token
      */
     public function getAlgs()
     {
-        return array_keys($this->algs);
+        return array_keys((array) $this->algs);
     }
 }

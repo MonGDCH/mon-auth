@@ -1,4 +1,5 @@
 <?php
+
 namespace mon\auth\exception;
 
 use UnexpectedValueException;
@@ -7,6 +8,4 @@ use UnexpectedValueException;
  * JWT异常
  */
 class JwtException extends UnexpectedValueException
-{
-
-}
+{ }

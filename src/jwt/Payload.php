@@ -1,8 +1,8 @@
 <?php
+
 namespace mon\auth\jwt;
 
 use ArrayAccess;
-use mon\auth\jwt\Token;
 use mon\auth\exception\JwtException;
 
 /**
@@ -53,7 +53,7 @@ class Payload implements ArrayAccess
      */
     public function getIss()
     {
-        return $this->data['iss'] ?? null;
+        return isset($this->data['iss']) ? $this->data['iss'] : null;
     }
 
     /**
@@ -75,7 +75,7 @@ class Payload implements ArrayAccess
      */
     public function getSub()
     {
-        return $this->data['sub'] ?? null;
+        return isset($this->data['sub']) ? $this->data['sub'] : null;
     }
 
     /**
@@ -96,7 +96,7 @@ class Payload implements ArrayAccess
      */
     public function getAud()
     {
-        return $this->data['aud'] ?? null;
+        return isset($this->data['aud']) ? $this->data['aud'] : null;
     }
 
     /**
@@ -117,7 +117,7 @@ class Payload implements ArrayAccess
      */
     public function getJti()
     {
-        return $this->data['jti'] ?? null;
+        return isset($this->data['jti']) ? $this->data['jti'] : null;
     }
 
     /**
@@ -138,7 +138,7 @@ class Payload implements ArrayAccess
      */
     public function getExt()
     {
-        return $this->data['ext'] ?? null;
+        return isset($this->data['ext']) ? $this->data['ext'] : null;
     }
 
     /**
@@ -226,7 +226,7 @@ class Payload implements ArrayAccess
      */
     public function __get(string $key)
     {
-        return $this->data[$key] ?? null;
+        return isset($this->data[$key]) ? $this->data[$key] : null;
     }
 
     /**
@@ -248,7 +248,7 @@ class Payload implements ArrayAccess
      */
     public function offsetGet($offset)
     {
-        return $this->data[$offset] ?? null;
+        return isset($this->data[$offset]) ? $this->data[$offset] : null;
     }
 
     /**
