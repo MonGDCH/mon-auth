@@ -2,14 +2,16 @@
 
 namespace mon\auth\rbac\model;
 
+use mon\auth\rbac\Auth;
 use mon\util\Instance;
-use mon\auth\rbac\model\Comm;
+use mon\orm\Model;
 use mon\util\Tree;
+use mon\auth\rbac\Validate;
 
 /**
  * 权限规则表
  */
-class Rule extends Comm
+class Rule extends Model
 {
     use Instance;
 
@@ -18,17 +20,75 @@ class Rule extends Comm
      *
      * @var string
      */
-    protected $table = 'mon_auth_rule';
+    protected $table = 'auth_rule';
+
+    /**
+     * 新增自动写入字段
+     *
+     * @var array
+     */
+    protected $insert = ['create_time', 'update_time'];
+
+    /**
+     * 更新自动写入字段
+     *
+     * @var array
+     */
+    protected $update = ['update_time'];
+
+    /**
+     * 验证器
+     *
+     * @var [type]
+     */
+    protected $validate;
+
+    /**
+     * 构造方法
+     */
+    public function __construct()
+    {
+        $this->table = Auth::instance()->getConfig('auth_rule');
+        $this->validate = new Validate;
+    }
+
+    /**
+     * 自动完成update_time字段
+     * 
+     * @param [type] $val 默认值
+     * @param array  $row 列值
+     */
+    protected function setUpdateTimeAttr($val)
+    {
+        return $_SERVER['REQUEST_TIME'];
+    }
+
+    /**
+     * 自动完成create_time字段
+     * 
+     * @param [type] $val 默认值
+     * @param array  $row 列值
+     */
+    protected function setCreateTimeAttr($val)
+    {
+        return $_SERVER['REQUEST_TIME'];
+    }
 
     /**
      * 获取规则信息
      *
-     * @param integer $gid
+     * @param array $where
      * @return void
      */
-    public function getInfo(int $rule_id)
+    public function getInfo(array $where)
     {
-        return $this->where('id', $rule_id)->get();
+        $info = $this->where($where)->find();
+        if (!$info) {
+            $this->error = '规则信息不存在';
+            return false;
+        }
+
+        return $info;
     }
 
     /**
@@ -47,9 +107,9 @@ class Rule extends Comm
 
         $rule_id = $this->save([
             'pid'           => $option['pid'],
-            'mark'          => $option['mark'],
+            'title'         => $option['title'],
             'name'          => $option['name'],
-            'description'   => $option['description'] ?? '',
+            'remark'        => isset($option['remark']) ? $option['remark'] : '',
         ], null, true);
         if (!$rule_id) {
             $this->error = '新增规则失败';
@@ -75,13 +135,12 @@ class Rule extends Comm
 
         $idx = $option['idx'];
         $status = $option['status'];
-        $baseInfo = $this->getInfo($idx);
-        if ($baseInfo->isEmpty()) {
-            $this->error = '规则节点不存在';
+        $baseInfo = $this->getInfo(['id' => $idx]);
+        if (!$baseInfo) {
             return false;
         }
 
-        if ($baseInfo->status != $status) {
+        if ($baseInfo['status'] != $status) {
             // 修改了状态
             $rules = $this->select();
             if ($status == '1') {
@@ -99,7 +158,7 @@ class Rule extends Comm
                     'pid'           => $option['pid'],
                     'mark'          => $option['mark'],
                     'name'          => $option['name'],
-                    'description'   => $option['description'] ?? '',
+                    'remark'        => isset($option['remark']) ? $option['remark'] : '',
                     'status'        => $option['status'],
                 ], ['id' => $idx]);
                 if (!$save) {
@@ -108,7 +167,7 @@ class Rule extends Comm
                 }
 
                 return true;
-            } else if ($status == '0') {
+            } else if ($status == '2') {
                 // 无效，同步将所有后代节点下线
                 $childrens = Tree::instance()->data($rules)->getChildrenIds($idx);
 
@@ -120,7 +179,7 @@ class Rule extends Comm
                         'pid'           => $option['pid'],
                         'mark'          => $option['mark'],
                         'name'          => $option['name'],
-                        'description'   => $option['description'] ?? '',
+                        'remark'        => isset($option['remark']) ? $option['remark'] : '',
                         'status'        => $option['status'],
                     ], ['id' => $idx]);
                     if (!$save) {
@@ -154,8 +213,7 @@ class Rule extends Comm
                 'pid'           => $option['pid'],
                 'mark'          => $option['mark'],
                 'name'          => $option['name'],
-                'description'   => $option['description'] ?? '',
-                'status'        => $option['status'],
+                'remark'        => isset($option['remark']) ? $option['remark'] : '',
             ], ['id' => $idx]);
             if (!$save) {
                 $this->error = '更新失败';
