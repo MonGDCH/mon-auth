@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f2cd45075e073f0898124a1e804ed3d0",
+    "content-hash": "f213a535704e27db052001a116858a1e",
     "packages": [
         {
             "name": "mongdch/mon-container",
@@ -52,53 +52,6 @@
                 "php"
             ],
             "time": "2019-06-24T06:02:58+00:00"
-        },
-        {
-            "name": "mongdch/mon-env",
-            "version": "1.0.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/MonGDCH/mon-env.git",
-                "reference": "96a240559f4872a7707756602bfc33cc5f26f061"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/MonGDCH/mon-env/zipball/96a240559f4872a7707756602bfc33cc5f26f061",
-                "reference": "96a240559f4872a7707756602bfc33cc5f26f061",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
-            },
-            "require": {
-                "php": ">=5.6.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "mon\\env\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "MonGDCH",
-                    "email": "985558837@qq.com"
-                }
-            ],
-            "description": "the php env config utils.",
-            "keywords": [
-                "config",
-                "env",
-                "php"
-            ],
-            "time": "2019-09-12T08:40:17+00:00"
         },
         {
             "name": "mongdch/mon-orm",
