@@ -4,13 +4,11 @@ namespace mon\auth\rbac\model;
 
 use mon\auth\rbac\Auth;
 use mon\util\Instance;
-use mon\auth\rbac\Validate;
-use mon\orm\Model;
 
 /**
  * 组别用户关联模型
  */
-class Access extends Model
+class Access extends Base
 {
     use Instance;
 
@@ -19,58 +17,15 @@ class Access extends Model
      *
      * @var string
      */
-    protected $table = 'auth_access';
-
-    /**
-     * 新增自动写入字段
-     *
-     * @var array
-     */
-    protected $insert = ['create_time', 'update_time'];
-
-    /**
-     * 更新自动写入字段
-     *
-     * @var array
-     */
-    protected $update = ['update_time'];
-
-    /**
-     * 验证器
-     *
-     * @var [type]
-     */
-    protected $validate;
+    protected $table;
 
     /**
      * 构造方法
      */
     public function __construct()
     {
+        parent::__construct();
         $this->table = Auth::instance()->getConfig('auth_group_access');
-        $this->validate = new Validate;
-    }
-
-    /**
-     * 自动完成update_time字段
-     * 
-     * @param [type] $val 默认值
-     * @param array  $row 列值
-     */
-    protected function setUpdateTimeAttr($val)
-    {
-        return $_SERVER['REQUEST_TIME'];
-    }
-
-    /**
-     * 自动完成create_time字段
-     * 
-     * @param [type] $val 默认值
-     * @param array  $row 列值
-     */
-    protected function setCreateTimeAttr($val)
-    {
-        return $_SERVER['REQUEST_TIME'];
     }
 
     /**

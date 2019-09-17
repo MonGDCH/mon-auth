@@ -4,8 +4,6 @@ namespace mon\auth\rbac;
 
 use mon\auth\rbac\model\Access;
 use mon\auth\rbac\model\Rule;
-use mon\factory\Container;
-use mon\orm\Db;
 use mon\util\Instance;
 
 /**
@@ -25,6 +23,13 @@ use mon\util\Instance;
 class Auth
 {
     use Instance;
+
+    /**
+     * 初始化标志
+     *
+     * @var boolean
+     */
+    protected $init = false;
 
     /**
      * 权限DB表默认配置
@@ -62,29 +67,36 @@ class Auth
     /**
      * 构造方法
      */
-    protected function __construct($config)
+    protected function init(array $config)
     {
         if (!empty($config)) {
             $this->config = array_merge($this->config, $config);
         }
-        // 设置数据库
-        Db::setConfig($this->config['database']);
+        // 标志初始化
+        $this->init = true;
+        return $this;
+    }
+
+    /**
+     * 是否已初始化
+     *
+     * @return boolean
+     */
+    public function isInit()
+    {
+        return $this->init;
     }
 
     /**
      * 设置配置
      *
-     * @param array $config     设置配置信息
+     * @param array   $config   设置配置信息
      * @param boolean $setDb    重置mysql链接配置
      * @return void
      */
     public function setConfig(array $config, $setDb = false)
     {
         $this->config = array_merge($this->config, $config);
-
-        if ($setDb) {
-            Db::setConfig($this->config['database']);
-        }
 
         return $this;
     }
