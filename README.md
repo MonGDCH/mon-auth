@@ -21,6 +21,11 @@ composer require mongdch/mon-auth
 
 #### 版本
 
+##### 1.0.2
+
+* 完善RBAC权限控制
+* 发布1.0.2 RC版本
+
 ##### 1.0.1
 
 * 发布第一个版本
