@@ -54,20 +54,20 @@ class Auth
             // 密码
             'password'        => '',
             // 端口
-            'port'            => '',
+            'port'            => '3306',
             // 数据库连接参数
             'params'          => [],
             // 数据库编码默认采用utf8
             'charset'         => 'utf8',
             // 返回结果集类型
-            'result_type'     => PDO::FETCH_ASSOC,
+            'result_type'     => \PDO::FETCH_ASSOC,
         ],
     ];
 
     /**
      * 构造方法
      */
-    protected function init(array $config)
+    public function init(array $config)
     {
         if (!empty($config)) {
             $this->config = array_merge($this->config, $config);
@@ -166,26 +166,6 @@ class Auth
     }
 
     /**
-     * 根据用户所属组别
-     *
-     * @param  [type] $uid 用户ID
-     * @return [type]      [description]
-     */
-    public function getGroups($uid)
-    {
-        // 判断缓存
-        static $groups = [];
-        if (isset($groups[$uid])) {
-            return $groups[$uid];
-        }
-        // 查询获取用户组别信息
-        $userGroups = Access::instance()->getUserGroup($uid);
-
-        $groups[$uid] = $userGroups ?: [];
-        return $groups[$uid];
-    }
-
-    /**
      * 获取角色权限节点对应权限
      *
      * @param  [type] $uid 用户ID
@@ -199,7 +179,7 @@ class Auth
         }
         // 获取规则节点
         $ids = [];
-        $groups = $this->getGroups($uid);
+        $groups = Access::instance()->getUserGroup($uid);
         foreach ($groups as $v) {
             $ids = array_merge($ids, explode(',', trim($v['rules'], ',')));
         }
@@ -208,7 +188,7 @@ class Auth
     }
 
     /**
-     * 获取用户权限列表
+     * 获取用户权限规则列表
      *
      * @param  [type] $uid 用户ID
      * @return [type]      [description]

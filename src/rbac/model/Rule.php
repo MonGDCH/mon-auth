@@ -47,12 +47,31 @@ class Rule extends Base
     }
 
     /**
+     * 获取所有组别信息
+     *
+     * @return void
+     */
+    public function getList(array $option)
+    {
+        $offset = isset($option['offset']) ? intval($option['offset']) : 0;
+        $limit = isset($option['limit']) ? intval($option['limit']) : 10;
+
+        $list = $this->limit($offset * $limit, $limit)->select();
+        $count = $this->count('id');
+
+        return [
+            'list' => $list,
+            'count' => $count
+        ];
+    }
+
+    /**
      * 新增规则
      *
      * @param arrry $option
      * @return void 新增规则ID
      */
-    public function add(arrry $option)
+    public function add(array $option)
     {
         $check = $this->validate->scope('rule_add')->data($option)->check();
         if ($check !== true) {
@@ -111,7 +130,7 @@ class Rule extends Base
                 // 更新
                 $save = $this->save([
                     'pid'           => $option['pid'],
-                    'mark'          => $option['mark'],
+                    'title'         => $option['title'],
                     'name'          => $option['name'],
                     'remark'        => isset($option['remark']) ? $option['remark'] : '',
                     'status'        => $option['status'],
@@ -132,7 +151,7 @@ class Rule extends Base
                     // 更新规则
                     $save = $this->save([
                         'pid'           => $option['pid'],
-                        'mark'          => $option['mark'],
+                        'title'         => $option['title'],
                         'name'          => $option['name'],
                         'remark'        => isset($option['remark']) ? $option['remark'] : '',
                         'status'        => $option['status'],
@@ -166,7 +185,7 @@ class Rule extends Base
             // 未修改状态，直接更新
             $save = $this->save([
                 'pid'           => $option['pid'],
-                'mark'          => $option['mark'],
+                'title'         => $option['title'],
                 'name'          => $option['name'],
                 'remark'        => isset($option['remark']) ? $option['remark'] : '',
             ], ['id' => $idx]);

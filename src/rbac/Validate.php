@@ -21,7 +21,7 @@ class Validate extends Vali
         'new_gid'       => 'required|int|min:1',
         'pid'           => 'required|int|min:0',
         'status'        => 'required|in:1,2',
-        'rules'         => 'required|str|rules',
+        'rules'         => 'required|arr|rules',
         'name'          => 'required|str',
         'title'         => 'required|str',
         'remark'        => 'str',
@@ -64,9 +64,9 @@ class Validate extends Vali
         // 修改组别用户关联
         'access_modify'     => ['uid', 'gid', 'new_gid'],
         // 添加角色组别
-        'group_add'         => ['pid', 'name', 'rules'],
+        'group_add'         => ['pid', 'title', 'rules'],
         // 修改角色组别信息
-        'group_modify'      => ['idx', 'pid', 'name', 'rules', 'status'],
+        'group_modify'      => ['idx', 'pid', 'title', 'rules', 'status'],
         // 增加规则
         'rule_add'          => ['title', 'pid', 'name', 'remark'],
         // 修改规则
@@ -81,11 +81,7 @@ class Validate extends Vali
      */
     public function rules($value)
     {
-        if (empty($value)) {
-            return false;
-        }
-        $rules = explode(',', $value);
-        foreach ($rules as $rule) {
+        foreach ($value as $rule) {
             if (!$this->int($rule)) {
                 return false;
             }
