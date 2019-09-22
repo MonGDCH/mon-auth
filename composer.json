@@ -1,7 +1,7 @@
 {
     "name": "mongdch/mon-auth",
     "description": "The PHP Auth management engine",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "keywords": [
         "PHP",
         "mon",

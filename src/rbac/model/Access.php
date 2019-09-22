@@ -36,7 +36,7 @@ class Access extends Base
      */
     public function getUserGroup($uid)
     {
-        return $this->table('auth_access a')->join('auth_group b', 'a.group_id=b.id')
+        return $this->table($this->table . ' a')->join(Auth::instance()->getConfig('auth_group') . ' b', 'a.group_id=b.id')
             ->field('a.uid, a.group_id, b.id, b.pid, b.title, b.rules')
             ->where('a.uid', $uid)->where('b.status', 1)->select();
     }
