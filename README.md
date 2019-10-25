@@ -21,6 +21,10 @@ composer require mongdch/mon-auth
 
 #### 版本
 
+##### 1.0.4
+
+* 优化代码，中文化JWT类库
+
 ##### 1.0.3
 
 * 修复自定义权限表名无效BUG

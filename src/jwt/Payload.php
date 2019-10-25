@@ -40,7 +40,7 @@ class Payload implements ArrayAccess
      * @param  string $issuer [description]
      * @return [type]         [description]
      */
-    public function setIss(string $issuer)
+    public function setIss($issuer)
     {
         $this->data['iss'] = $issuer;
         return $this;
@@ -62,7 +62,7 @@ class Payload implements ArrayAccess
      * @param  string $issuer [description]
      * @return [type]         [description]
      */
-    public function setSub(string $sub)
+    public function setSub($sub)
     {
         $this->data['sub'] = $sub;
         return $this;
@@ -83,7 +83,7 @@ class Payload implements ArrayAccess
      *
      * @param string $aud [description]
      */
-    public function setAud(string $aud)
+    public function setAud($aud)
     {
         $this->data['aud'] = $aud;
         return $this;
@@ -104,7 +104,7 @@ class Payload implements ArrayAccess
      *
      * @param string $jti [description]
      */
-    public function setJti(string $jti)
+    public function setJti($jti)
     {
         $this->data['jti'] = $jti;
         return $this;
@@ -146,7 +146,7 @@ class Payload implements ArrayAccess
      *
      * @param int $exp [description]
      */
-    public function setExp(int $exp)
+    public function setExp($exp)
     {
         $this->exp = $exp;
         return $this;
@@ -167,7 +167,7 @@ class Payload implements ArrayAccess
      *
      * @param int $nbf [description]
      */
-    public function setNbf(int $nbf)
+    public function setNbf($nbf)
     {
         $this->nbf = $nbf;
         return $this;
@@ -213,7 +213,7 @@ class Payload implements ArrayAccess
      * @param string 		$key   字段名
      * @param string|array  $value 值
      */
-    public function __set(string $key, $value)
+    public function __set($key, $value)
     {
         $this->data[$key] = $value;
     }
@@ -224,7 +224,7 @@ class Payload implements ArrayAccess
      * @param  string $key [description]
      * @return [type]      [description]
      */
-    public function __get(string $key)
+    public function __get($key)
     {
         return isset($this->data[$key]) ? $this->data[$key] : null;
     }
