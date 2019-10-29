@@ -39,7 +39,7 @@ class Base extends Model
     public function __construct()
     {
         if (!Auth::instance()->isInit()) {
-            throw new RbacException('system not init');
+            throw new RbacException('RBAC权限控制未初始化');
         }
         $this->config = Auth::instance()->getConfig('database');
         $this->validate = new Validate;

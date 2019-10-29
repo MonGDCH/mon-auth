@@ -1,11 +1,12 @@
 {
     "name": "mongdch/mon-auth",
     "description": "The PHP Auth management engine",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "keywords": [
         "PHP",
         "mon",
-        "auth"
+        "jwt",
+        "rbac"
     ],
     "homepage": "http://blog.gdmon.com/",
     "license": "MIT",

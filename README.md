@@ -21,6 +21,11 @@ composer require mongdch/mon-auth
 
 #### 版本
 
+##### 1.0.5
+
+* 优化RBAC代码
+* 增加RBAC获取内置模型的model方法
+
 ##### 1.0.4
 
 * 优化代码，中文化JWT类库

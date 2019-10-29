@@ -2,9 +2,10 @@
 
 namespace mon\auth\rbac;
 
+use mon\util\Instance;
 use mon\auth\rbac\model\Access;
 use mon\auth\rbac\model\Rule;
-use mon\util\Instance;
+use mon\auth\exception\RbacException;
 
 /**
  * 权限控制
@@ -13,11 +14,11 @@ use mon\util\Instance;
  * 1，是对规则进行认证，不是对节点进行认证。用户可以把节点当作规则名称实现对节点进行认证。
  *      $auth = Auth::instance($config);  $auth->check('规则名称','用户id')
  * 2，可以同时对多条规则进行认证，并设置多条规则的关系（ true 或者 false ）
- *      $auth = Auth::instance($config);  $auth->check('规则1,规则2','用户id', false)
+ *      $auth = Auth::instance($config);  $auth->check([规则1, 规则2], '用户id', false)
  *      第三个参数为 false 时表示，用户需要同时具有规则1和规则2的权限。 当第三个参数为 true 时，表示用户值需要具备其中一个条件即可。默认为 true
  * 3，一个用户可以属于多个用户组(think_auth_group_access表 定义了用户所属用户组)。我们需要设置每个用户组拥有哪些规则(think_auth_group 定义了用户组权限)
  * 
- * @version 1.0.1
+ * @version 1.0.2 优化代码，增加model方法
  * @author Mon <985558837@qq.com>
  */
 class Auth
@@ -37,12 +38,18 @@ class Auth
      * @var array
      */
     protected $config = [
-        'auth_on'           => true,                // 权限开关
-        'auth_group'        => 'auth_group',        // 用户组数据表名
-        'auth_group_access' => 'auth_access',       // 用户-用户组关系表
-        'auth_rule'         => 'auth_rule',         // 权限规则表
-        'admin_mark'        => '*',                 // 超级管理员权限标志
-        'database'          => [                    // 数据库配置
+        // 权限开关
+        'auth_on'           => true,
+        // 用户组数据表名               
+        'auth_group'        => 'auth_group',
+        // 用户-用户组关系表     
+        'auth_group_access' => 'auth_access',
+        // 权限规则表    
+        'auth_rule'         => 'auth_rule',
+        // 超级管理员权限标志       
+        'admin_mark'        => '*',
+        // 数据库配置              
+        'database'          => [
             // 数据库类型
             'type'            => 'mysql',
             // 服务器地址
@@ -55,8 +62,6 @@ class Auth
             'password'        => '',
             // 端口
             'port'            => '3306',
-            // 数据库连接参数
-            'params'          => [],
             // 数据库编码默认采用utf8
             'charset'         => 'utf8',
             // 返回结果集类型
@@ -119,7 +124,7 @@ class Auth
     /**
      * 校验权限
      *
-     * @param  string|array $name     需要验证的规则列表,支持逗号分隔的权限规则或索引数组
+     * @param  string|array $name     需要验证的规则列表,支持字符串的单个权限规则或索引数组多个权限规则
      * @param  integer 		$uid      认证用户的id
      * @param  boolean 		$relation 如果为 true 表示满足任一条规则即通过验证;如果为 false 则表示需满足所有规则才能通过验证
      * @return boolean           	  成功返回true，失败返回false
@@ -138,12 +143,11 @@ class Auth
 
         // 获取需求验证的规则
         if (is_string($name)) {
-            $name = strtolower($name);
-            if (strpos($name, ',') !== false) {
-                $name = explode(',', $name);
-            } else {
-                $name = array($name);
-            }
+            $name = [strtolower($name)];
+        } else if (is_array($name)) {
+            $name = array_map('strtolower', $name);
+        } else {
+            throw new RbacException('不支持的规则类型，只支持string、array类型');
         }
         // 保存验证通过的规则名
         $list = [];
@@ -248,5 +252,21 @@ class Auth
         // 获取权限规则
         $rules[$uid] = Rule::instance()->where($map)->field('id, pid, name, title')->select();
         return $rules[$uid];
+    }
+
+    /**
+     * 获取模型
+     *
+     * @param [type] $name
+     * @return void
+     */
+    public function model($name)
+    {
+        if (!in_array(strtolower($name), ['access', 'group', 'rule'])) {
+            throw new RbacException('不存在对应RBCK权限模型');
+        }
+
+        $class = '\\mon\\auth\\rbac\\model\\' . ucwords($name);
+        return $class::instance();
     }
 }

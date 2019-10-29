@@ -71,9 +71,16 @@ $auth->init(['database' => [
 
 // $data = Auth::instance()->getRule(1);
 
-$check = Auth::instance()->check('t5,t4,55', 1, true);
+// 校验单个权限
+$check = Auth::instance()->check('t5', 1, true);
+// 校验多个权限
+// $check = Auth::instance()->check(['t5','t4','55'], 1, false);
 
 var_dump($check);
 
+// 获取RBAC模型
+// $model = Auth::instance()->model('access');
+
+// var_dump($model);
 
 
