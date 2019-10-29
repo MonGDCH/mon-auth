@@ -69,10 +69,11 @@ class Group extends Base
     /**
      * 创建角色组
      *
-     * @param array $option
+     * @param array $option 组别参数
+     * @param array $ext    扩展写入字段
      * @return void
      */
-    public function add(array $option)
+    public function add(array $option, array $ext = [])
     {
         $check = $this->validate->scope('group_add')->data($option)->check();
         if ($check !== true) {
@@ -87,11 +88,12 @@ class Group extends Base
             return false;
         }
         // 记录组别信息
-        $group_id = $this->save([
+        $info = array_merge($ext, [
             'title' => $option['title'],
             'pid'   => $option['pid'],
             'rules' => implode(',', $rules),
-        ], null, true);
+        ]);
+        $group_id = $this->save($info, null, true);
         if (!$group_id) {
             $this->error = '创建权限组失败';
             return false;
@@ -103,10 +105,11 @@ class Group extends Base
     /**
      * 修改角色组信息
      *
-     * @param array $option
+     * @param array $option 组别参数
+     * @param array $ext    扩展写入字段
      * @return void
      */
-    public function modify(array $option)
+    public function modify(array $option, array $ext = [])
     {
         $check = $this->validate->scope('group_modify')->data($option)->check();
         if ($check !== true) {
@@ -174,25 +177,27 @@ class Group extends Base
                     }
 
                     // 更新角色组信息
-                    $save = $this->save([
+                    $modifyInfo = array_merge($ext, [
                         'title'     => $option['title'],
                         'pid'       => $pid,
                         'rules'     => $rules,
                         'status'    => $status
-                    ], ['id' => $idx]);
+                    ]);
+                    $save = $this->save($modifyInfo, ['id' => $idx]);
                     if (!$save) {
                         $this->rollback();
                         $this->error = '修改角色组信息失败';
                         return false;
                     }
                 } else if ($status == '2') {
-                    // 修改为无形
-                    $save = $this->save([
+                    // 修改为无效状态
+                    $modifyInfo = array_merge($ext, [
                         'title'     => $option['title'],
                         'pid'       => $pid,
                         'rules'     => implode(',', $rules),
                         'status'    => $status
-                    ], ['id' => $idx]);
+                    ]);
+                    $save = $this->save($modifyInfo, ['id' => $idx]);
                     if (!$save) {
                         $this->rollback();
                         $this->error = '修改当前角色组信息失败';
@@ -216,12 +221,13 @@ class Group extends Base
                 }
             } else {
                 // 未修改状态，直接更新
-                $save = $this->save([
+                $modifyInfo = array_merge($ext, [
                     'title'     => $option['title'],
                     'pid'       => $pid,
                     'rules'     => implode(',', $rules),
                     'status'    => $status
-                ], ['id' => $idx]);
+                ]);
+                $save = $this->save($modifyInfo, ['id' => $idx]);
                 if (!$save) {
                     $this->rollback();
                     $this->error = '修改角色组信息失败';

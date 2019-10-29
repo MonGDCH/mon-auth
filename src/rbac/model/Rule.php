@@ -65,13 +65,15 @@ class Rule extends Base
         ];
     }
 
+
     /**
      * 新增规则
      *
-     * @param arrry $option
-     * @return void 新增规则ID
+     * @param array $option 规则参数
+     * @param array $ext    扩展写入字段
+     * @return void
      */
-    public function add(array $option)
+    public function add(array $option, array $ext = [])
     {
         $check = $this->validate->scope('rule_add')->data($option)->check();
         if ($check !== true) {
@@ -79,12 +81,13 @@ class Rule extends Base
             return false;
         }
 
-        $rule_id = $this->save([
+        $info = array_merge($ext, [
             'pid'           => $option['pid'],
             'title'         => $option['title'],
             'name'          => $option['name'],
             'remark'        => isset($option['remark']) ? $option['remark'] : '',
-        ], null, true);
+        ]);
+        $rule_id = $this->save($info, null, true);
         if (!$rule_id) {
             $this->error = '新增规则失败';
             return false;
@@ -96,10 +99,11 @@ class Rule extends Base
     /**
      * 修改规则
      *
-     * @param array $option
+     * @param array $option 规则参数
+     * @param array $ext    扩展写入字段
      * @return void
      */
-    public function modify(array $option)
+    public function modify(array $option, array $ext = [])
     {
         $check = $this->validate->scope('rule_modify')->data($option)->check();
         if ($check !== true) {
@@ -128,13 +132,14 @@ class Rule extends Base
                 }
 
                 // 更新
-                $save = $this->save([
+                $info = array_merge($ext, [
                     'pid'           => $option['pid'],
                     'title'         => $option['title'],
                     'name'          => $option['name'],
                     'remark'        => isset($option['remark']) ? $option['remark'] : '',
                     'status'        => $option['status'],
-                ], ['id' => $idx]);
+                ]);
+                $save = $this->save($info, ['id' => $idx]);
                 if (!$save) {
                     $this->error = '更新规则失败';
                     return false;
@@ -149,19 +154,19 @@ class Rule extends Base
                 $this->startTrans();
                 try {
                     // 更新规则
-                    $save = $this->save([
+                    $info = array_merge($ext, [
                         'pid'           => $option['pid'],
                         'title'         => $option['title'],
                         'name'          => $option['name'],
                         'remark'        => isset($option['remark']) ? $option['remark'] : '',
                         'status'        => $option['status'],
-                    ], ['id' => $idx]);
+                    ]);
+                    $save = $this->save($info, ['id' => $idx]);
                     if (!$save) {
                         $this->rollback();
                         $this->error = '更新失败';
                         return false;
                     }
-
 
                     // 下线后代
                     $offline = $this->whereIn('id', $childrens)->update(['status' => $option['status'], 'update_time' => $_SERVER['REQUEST_TIME']]);
@@ -183,12 +188,13 @@ class Rule extends Base
             }
         } else {
             // 未修改状态，直接更新
-            $save = $this->save([
+            $info = array_merge($ext, [
                 'pid'           => $option['pid'],
                 'title'         => $option['title'],
                 'name'          => $option['name'],
                 'remark'        => isset($option['remark']) ? $option['remark'] : '',
-            ], ['id' => $idx]);
+            ]);
+            $save = $this->save($info, ['id' => $idx]);
             if (!$save) {
                 $this->error = '更新失败';
                 return false;

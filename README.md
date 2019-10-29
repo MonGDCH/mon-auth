@@ -21,6 +21,10 @@ composer require mongdch/mon-auth
 
 #### 版本
 
+##### 1.0.6
+
+* 补全1.0.5版本发布少的RBAC优化代码
+
 ##### 1.0.5
 
 * 优化RBAC代码

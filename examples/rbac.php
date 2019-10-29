@@ -24,37 +24,44 @@ $auth->init(['database' => [
 
 // 新增规则
 // $save = Rule::instance()->add([
-//     'title'     => 't5',
-//     'name'      => 't5',
-//     // 'remark'    => 't3_remark',
-//     'pid'       => 6
-// ]);
+//     'title'     => 't',
+//     'name'      => 't7',
+//     'remark'    => 't3_remark',
+//     'pid'       => 0
+// ], ['test' => 123456]);
+
 
 // 修改规则
 // $save = Rule::instance()->modify([
-//     'title'     => 'tts',
-//     'name'      => 'tts',
-//     'remark'    => 'tts_remark',
+//     'title'     => 'ttsx',
+//     'name'      => '123asda',
+//     'remark'    => '',
 //     'pid'       => 0,
 //     'status'    => 1,
-//     'idx'       => 6
-// ]);
+//     'idx'       => 11
+// ], ['test' => 332]);
+
 
 // 新增组别
 // $save = Group::instance()->add([
-//     'pid'   => 12,
-//     'title' => 'tests',
+//     'pid'   => 0,
+//     'title' => 'testsss',
 //     'rules' => [8, 6]
-// ]);
+// ], ['test' => 123]);
+
+
 
 // 更新组别
-// $save = Group::instance()->modify([
-//     'idx'   => 12,
-//     'pid'   => 2,
-//     'title' => 'demo1',
-//     'rules' => [8, 7, 9],
-//     'status'=> 1,
-// ]);
+$save = Group::instance()->modify([
+    'idx'   => 12,
+    'pid'   => 2,
+    'title' => 'demo1',
+    'rules' => [8, 7, 9],
+    'status'=> 1,
+], ['test' => 'dgsh']);
+
+var_dump($save, Group::instance()->getError());exit;
+
 
 // $access = Access::instance()->modify([
 //     'uid'   => 1,
