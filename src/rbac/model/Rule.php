@@ -169,11 +169,13 @@ class Rule extends Base
                     }
 
                     // 下线后代
-                    $offline = $this->whereIn('id', $childrens)->update(['status' => $option['status'], 'update_time' => $_SERVER['REQUEST_TIME']]);
-                    if (!$offline) {
-                        $this->rollback();
-                        $this->error = '修改后代权限规则失败';
-                        return false;
+                    if (!empty($childrens)) {
+                        $offline = $this->whereIn('id', $childrens)->update(['status' => $option['status'], 'update_time' => $_SERVER['REQUEST_TIME']]);
+                        if (!$offline) {
+                            $this->rollback();
+                            $this->error = '修改后代权限规则失败';
+                            return false;
+                        }
                     }
 
                     // 提交事务
