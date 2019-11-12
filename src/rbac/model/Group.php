@@ -207,11 +207,13 @@ class Group extends Base
                     // 无效，同步将所有后代节点下线
                     $childrens = Tree::instance()->data($groups)->getChildrenIds($idx);
                     // 下线后代
-                    $offline = $this->whereIn('id', $childrens)->update(['status' => $option['status'], 'update_time' => $_SERVER['REQUEST_TIME']]);
-                    if (!$offline) {
-                        $this->rollback();
-                        $this->error = '修改后代权限规则失败';
-                        return false;
+                    if ($childrens) {
+                        $offline = $this->whereIn('id', $childrens)->update(['status' => $option['status'], 'update_time' => $_SERVER['REQUEST_TIME']]);
+                        if (!$offline) {
+                            $this->rollback();
+                            $this->error = '修改后代权限规则失败';
+                            return false;
+                        }
                     }
                 } else {
                     // 未知状态

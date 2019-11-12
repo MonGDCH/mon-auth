@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "736ed91ab5e6bc9ff554f4c1f0120c51",
+    "content-hash": "acffa592e4aa2938e36ef8c1f12698ff",
     "packages": [
         {
             "name": "mongdch/mon-container",
@@ -55,16 +55,16 @@
         },
         {
             "name": "mongdch/mon-orm",
-            "version": "v2.1.1",
+            "version": "v2.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/MonGDCH/mon-orm.git",
-                "reference": "c30cab8c19fb42c2038b4ea23214a2f9c9bb92c4"
+                "reference": "526b1c2794b1c51eb4cf734f5756f6eb5b3638f0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MonGDCH/mon-orm/zipball/c30cab8c19fb42c2038b4ea23214a2f9c9bb92c4",
-                "reference": "c30cab8c19fb42c2038b4ea23214a2f9c9bb92c4",
+                "url": "https://api.github.com/repos/MonGDCH/mon-orm/zipball/526b1c2794b1c51eb4cf734f5756f6eb5b3638f0",
+                "reference": "526b1c2794b1c51eb4cf734f5756f6eb5b3638f0",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -100,7 +100,7 @@
                 "mysql",
                 "orm"
             ],
-            "time": "2019-07-05T08:15:55+00:00"
+            "time": "2019-11-03T06:17:12+00:00"
         },
         {
             "name": "mongdch/mon-util",

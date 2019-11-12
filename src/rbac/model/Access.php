@@ -92,7 +92,7 @@ class Access extends Base
 
         $del = $this->where('group_id', $option['gid'])->where('uid', $option['uid'])->limit(1)->delete();
         if (!$del) {
-            $this->error = '解除角色组绑定是吧';
+            $this->error = '解除角色组绑定失败';
             return false;
         }
 
