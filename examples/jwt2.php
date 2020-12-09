@@ -6,6 +6,7 @@ use mon\auth\jwt\Token;
 use mon\auth\jwt\Payload;
 use mon\auth\exception\JwtException;
 
+// RSA加密
 try{
 	$privateKey = <<<EOD
 -----BEGIN RSA PRIVATE KEY-----

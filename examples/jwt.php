@@ -12,7 +12,8 @@ try{
 	// 加密算法
 	$alg = 'HS256';
 	$build = new Payload;
-	$token = new Token;
+	// $token = new Token;
+	$token = Token::instance();
 
 	// 构建payload
 	$payload = $build->setIss('abc')->setSub('def')->setExt(['a' => '123'])->setExp(3600)->setAud('127.0.0.1');
