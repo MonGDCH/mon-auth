@@ -12,19 +12,24 @@ PHP权限管理类库。
 composer require mongdch/mon-auth
 ```
 
-2. 导入SQL文件，到对应的数据库。或修改后使用自己的数据库
+2. 如需使用RBAC库，则运行导入database目录下rbac.sql文件到数据库中。按需修改修改增加字段即可。
 
 #### API文档
 
-[请查看Wiki](https://gdmon.com) 
+- 暂未编写，请通过查看examples目录下的demo，阅读了解使用方法。
 
 
 #### 版本
 
+##### 1.0.8
+
+* 优化整体代码
+* 增强RBAC模块，支持通过new的方式，同时运多个权限实例
+
 ##### 1.0.7
 
 * 优化RBAC模块代码
-* 修复操作操作存在的BUG
+* 修复修改操作存在的BUG
 
 ##### 1.0.6
 

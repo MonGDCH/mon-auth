@@ -8,8 +8,8 @@ use mon\auth\exception\JwtException;
 /**
  * JWT payload 数据
  *
- * @author Mon
- * @version v1.0
+ * @author Mon <985558837@qq.com>
+ * @version v1.0.1
  */
 class Payload implements ArrayAccess
 {
@@ -37,8 +37,8 @@ class Payload implements ArrayAccess
     /**
      * 设置iss, 签发者
      *
-     * @param  string $issuer [description]
-     * @return [type]         [description]
+     * @param  string $issuer 签发者
+     * @return Payload
      */
     public function setIss($issuer)
     {
@@ -49,7 +49,7 @@ class Payload implements ArrayAccess
     /**
      * 获取iss
      *
-     * @return [type] [description]
+     * @return string
      */
     public function getIss()
     {
@@ -59,8 +59,8 @@ class Payload implements ArrayAccess
     /**
      * 设置sub, 所面向的用户
      *
-     * @param  string $issuer [description]
-     * @return [type]         [description]
+     * @param  string $issuer 所面向的用户
+     * @return Payload
      */
     public function setSub($sub)
     {
@@ -71,7 +71,7 @@ class Payload implements ArrayAccess
     /**
      * 获取sub
      *
-     * @return [type] [description]
+     * @return string
      */
     public function getSub()
     {
@@ -81,7 +81,8 @@ class Payload implements ArrayAccess
     /**
      * 设置aud, 接受者
      *
-     * @param string $aud [description]
+     * @param string $aud 接受者
+     * @return Payload
      */
     public function setAud($aud)
     {
@@ -92,7 +93,7 @@ class Payload implements ArrayAccess
     /**
      * 获取Aud
      *
-     * @return [type] [description]
+     * @return string
      */
     public function getAud()
     {
@@ -102,7 +103,8 @@ class Payload implements ArrayAccess
     /**
      * 设置jti, web-token提供唯一标识
      *
-     * @param string $jti [description]
+     * @param string $jti web-token提供唯一标识
+     * @return Payload
      */
     public function setJti($jti)
     {
@@ -113,7 +115,7 @@ class Payload implements ArrayAccess
     /**
      * 获取jti
      *
-     * @return [type] [description]
+     * @return string
      */
     public function getJti()
     {
@@ -123,7 +125,8 @@ class Payload implements ArrayAccess
     /**
      * 设置ext, 扩展数据
      *
-     * @param array $ext [description]
+     * @param array $ext 扩展数据
+     * @return Payload
      */
     public function setExt(array $ext)
     {
@@ -134,7 +137,7 @@ class Payload implements ArrayAccess
     /**
      * 获取ext
      *
-     * @return [type] [description]
+     * @return array
      */
     public function getExt()
     {
@@ -144,7 +147,8 @@ class Payload implements ArrayAccess
     /**
      * 设置exp, 有效时间
      *
-     * @param int $exp [description]
+     * @param integer $exp 有效时间
+     * @return Payload
      */
     public function setExp($exp)
     {
@@ -155,7 +159,7 @@ class Payload implements ArrayAccess
     /**
      * 获取exp
      *
-     * @return [type] [description]
+     * @return integer
      */
     public function getExp()
     {
@@ -165,7 +169,8 @@ class Payload implements ArrayAccess
     /**
      * 设置nbf, 多少秒后生效
      *
-     * @param int $nbf [description]
+     * @param integer $nbf 多少秒后生效
+     * @return Payload
      */
     public function setNbf($nbf)
     {
@@ -186,7 +191,7 @@ class Payload implements ArrayAccess
     /**
      * 获取payload数据
      *
-     * @return [type] [description]
+     * @return array
      */
     public function getData()
     {
@@ -212,6 +217,7 @@ class Payload implements ArrayAccess
      *
      * @param string 		$key   字段名
      * @param string|array  $value 值
+     * @return void
      */
     public function __set($key, $value)
     {
@@ -221,8 +227,8 @@ class Payload implements ArrayAccess
     /**
      * 获取data值
      *
-     * @param  string $key [description]
-     * @return [type]      [description]
+     * @param  string $key  key值
+     * @return mixed
      */
     public function __get($key)
     {
@@ -232,8 +238,8 @@ class Payload implements ArrayAccess
     /**
      * isset
      *
-     * @param  [type] $offset [description]
-     * @return [type]         [description]
+     * @param  string $offset  key值
+     * @return boolean
      */
     public function offsetExists($offset)
     {
@@ -243,8 +249,8 @@ class Payload implements ArrayAccess
     /**
      * get
      *
-     * @param  [type] $offset [description]
-     * @return [type]         [description]
+     * @param  string $offset  key值
+     * @return mixed
      */
     public function offsetGet($offset)
     {
@@ -254,9 +260,9 @@ class Payload implements ArrayAccess
     /**
      * set
      *
-     * @param  [type] $offset [description]
-     * @param  [type] $value  [description]
-     * @return [type]         [description]
+     * @param  string $offset key值
+     * @param  mixed $value value值
+     * @return void
      */
     public function offsetSet($offset, $value)
     {
@@ -266,8 +272,8 @@ class Payload implements ArrayAccess
     /**
      * unset
      *
-     * @param  [type] $offset [description]
-     * @return [type]         [description]
+     * @param  string $offset key值
+     * @return void
      */
     public function offsetUnset($offset)
     {

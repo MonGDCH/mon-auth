@@ -2,11 +2,14 @@
 
 namespace mon\auth\rbac\model;
 
-use mon\auth\rbac\Auth;
 use mon\util\Instance;
+use mon\auth\rbac\Auth;
 
 /**
  * 组别用户关联模型
+ * 
+ * @author Mon <985558837@qq.com>
+ * @version 1.0.1   优化代码
  */
 class Access extends Base
 {
@@ -21,22 +24,24 @@ class Access extends Base
 
     /**
      * 构造方法
+     *
+     * @param Auth $auth Auth实例
      */
-    public function __construct()
+    public function __construct(Auth $auth)
     {
-        parent::__construct();
-        $this->table = Auth::instance()->getConfig('auth_group_access');
+        parent::__construct($auth);
+        $this->table = $this->auth->getConfig('auth_group_access');
     }
 
     /**
      * 获取用户所在组别
      *
-     * @param integer $uid
-     * @return void
+     * @param integer $uid  用户ID
+     * @return array
      */
     public function getUserGroup($uid)
     {
-        return $this->table($this->table . ' a')->join(Auth::instance()->getConfig('auth_group') . ' b', 'a.group_id=b.id')
+        return $this->table($this->table . ' a')->join($this->auth->getConfig('auth_group') . ' b', 'a.group_id=b.id')
             ->field('a.uid, a.group_id, b.id, b.pid, b.title, b.rules')
             ->where('a.uid', $uid)->where('b.status', 1)->select();
     }
@@ -44,8 +49,8 @@ class Access extends Base
     /**
      * 创建组别用户关联
      *
-     * @param array $option
-     * @return void
+     * @param array $option 请求参数
+     * @return boolean
      */
     public function bind(array $option)
     {
@@ -73,8 +78,8 @@ class Access extends Base
      * 解除角色组绑定
      *
      * @see 此操作为删除操作，请谨慎使用
-     * @param array $option
-     * @return void
+     * @param array $option 请求参数
+     * @return boolean
      */
     public function unbind(array $option)
     {
@@ -102,8 +107,8 @@ class Access extends Base
     /**
      * 修改组别用户关联
      *
-     * @param array $option
-     * @return void
+     * @param array $option 请求参数
+     * @return boolean
      */
     public function modify(array $option)
     {

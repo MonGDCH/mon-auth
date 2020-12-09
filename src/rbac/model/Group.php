@@ -2,13 +2,15 @@
 
 namespace mon\auth\rbac\model;
 
-use Exception;
-use mon\auth\rbac\Auth;
-use mon\util\Instance;
 use mon\util\Tree;
+use mon\util\Instance;
+use mon\auth\rbac\Auth;
 
 /**
  * 角色组模型
+ * 
+ * @author Mon <985558837@qq.com>
+ * @version 1.0.1   优化代码
  */
 class Group extends Base
 {
@@ -23,22 +25,25 @@ class Group extends Base
 
     /**
      * 构造方法
+     *
+     * @param Auth $auth Auth实例
      */
-    public function __construct()
+    public function __construct(Auth $auth)
     {
-        parent::__construct();
-        $this->table = Auth::instance()->getConfig('auth_group');
+        parent::__construct($auth);
+        $this->table = $this->auth->getConfig('auth_group');
     }
 
     /**
      * 获取角色组信息
      *
-     * @param array $where
-     * @return void
+     * @param array $where  where条件
+     * @param string $field 查询字段
+     * @return mixed
      */
-    public function getInfo(array $where)
+    public function getInfo(array $where, $field = '*')
     {
-        $info = $this->where($where)->find();
+        $info = $this->where($where)->field($field)->find();
         if (!$info) {
             $this->error = '角色组不存在';
             return false;
@@ -50,14 +55,15 @@ class Group extends Base
     /**
      * 获取所有组别信息
      *
-     * @return void
+     * @param array $option 查询参数
+     * @return array
      */
     public function getList(array $option)
     {
-        $offset = isset($option['offset']) ? intval($option['offset']) : 0;
+        $page = isset($option['page']) ? intval($option['page']) : 1;
         $limit = isset($option['limit']) ? intval($option['limit']) : 10;
 
-        $list = $this->limit($offset * $limit, $limit)->select();
+        $list = $this->page($page, $limit)->select();
         $count = $this->count('id');
 
         return [
@@ -71,7 +77,7 @@ class Group extends Base
      *
      * @param array $option 组别参数
      * @param array $ext    扩展写入字段
-     * @return void
+     * @return mixed
      */
     public function add(array $option, array $ext = [])
     {
@@ -107,7 +113,7 @@ class Group extends Base
      *
      * @param array $option 组别参数
      * @param array $ext    扩展写入字段
-     * @return void
+     * @return boolean
      */
     public function modify(array $option, array $ext = [])
     {
@@ -239,7 +245,7 @@ class Group extends Base
 
             $this->commit();
             return true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // 回滚事务
             $this->rollback();
             $this->error = '修改角色组信息异常, ' . $e->getMessage();
@@ -252,7 +258,7 @@ class Group extends Base
      *
      * @param int  $pid     父级组别ID
      * @param array $rules  子级权限或要验证的权限列表
-     * @return void
+     * @return boolean
      */
     protected function diffRuleForPid($pid, array $rules)
     {
@@ -295,7 +301,7 @@ class Group extends Base
         }
 
         // 判断父级是否存在超级管理员权限标志位，不存在则判断子级是否存在越级的权限
-        if (!in_array(Auth::instance()->getConfig('admin_mark'), $baseRule)) {
+        if (!in_array($this->auth->getConfig('admin_mark'), $baseRule)) {
             // 比对数组
             return array_diff($checkRule, $baseRule);
         }
@@ -324,7 +330,7 @@ class Group extends Base
         }
 
         // 判断父级是否存在超级管理员权限标志位，管理员则返回所有子级权限
-        if (!in_array(Auth::instance()->getConfig('admin_mark'), $baseRule)) {
+        if (!in_array($this->auth->getConfig('admin_mark'), $baseRule)) {
             // 获取交集
             $rules = array_intersect($baseRule, $checkRule);
             sort($rules);

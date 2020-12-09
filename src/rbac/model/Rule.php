@@ -2,12 +2,15 @@
 
 namespace mon\auth\rbac\model;
 
-use mon\auth\rbac\Auth;
-use mon\util\Instance;
 use mon\util\Tree;
+use mon\util\Instance;
+use mon\auth\rbac\Auth;
 
 /**
  * 权限规则表
+ * 
+ * @author Mon <985558837@qq.com>
+ * @version 1.0.1   优化代码
  */
 class Rule extends Base
 {
@@ -22,22 +25,25 @@ class Rule extends Base
 
     /**
      * 构造方法
+     *
+     * @param Auth $auth Auth实例
      */
-    public function __construct()
+    public function __construct(Auth $auth)
     {
-        parent::__construct();
-        $this->table = Auth::instance()->getConfig('auth_rule');
+        parent::__construct($auth);
+        $this->table = $this->auth->getConfig('auth_rule');
     }
 
     /**
      * 获取规则信息
      *
-     * @param array $where
-     * @return void
+     * @param array $where  where条件
+     * @param string $field 查询字段
+     * @return mixed
      */
-    public function getInfo(array $where)
+    public function getInfo(array $where, $field = '*')
     {
-        $info = $this->where($where)->find();
+        $info = $this->where($where)->field($field)->find();
         if (!$info) {
             $this->error = '规则信息不存在';
             return false;
@@ -47,16 +53,17 @@ class Rule extends Base
     }
 
     /**
-     * 获取所有组别信息
+     * 获取所有规则信息
      *
-     * @return void
+     * @param array $option 查询参数
+     * @return array
      */
     public function getList(array $option)
     {
-        $offset = isset($option['offset']) ? intval($option['offset']) : 0;
+        $page = isset($option['page']) ? intval($option['page']) : 1;
         $limit = isset($option['limit']) ? intval($option['limit']) : 10;
 
-        $list = $this->limit($offset * $limit, $limit)->select();
+        $list = $this->page($page, $limit)->select();
         $count = $this->count('id');
 
         return [
@@ -71,7 +78,7 @@ class Rule extends Base
      *
      * @param array $option 规则参数
      * @param array $ext    扩展写入字段
-     * @return void
+     * @return mixed
      */
     public function add(array $option, array $ext = [])
     {
@@ -101,7 +108,7 @@ class Rule extends Base
      *
      * @param array $option 规则参数
      * @param array $ext    扩展写入字段
-     * @return void
+     * @return boolean
      */
     public function modify(array $option, array $ext = [])
     {
@@ -181,7 +188,7 @@ class Rule extends Base
                     // 提交事务
                     $this->commit();
                     return true;
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     // 回滚事务
                     $this->rollback();
                     $this->error = '修改规则异常, ' . $e->getMessage();

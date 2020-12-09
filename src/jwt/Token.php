@@ -4,25 +4,23 @@ namespace mon\auth\jwt;
 
 use mon\auth\jwt\Payload;
 use mon\auth\exception\JwtException;
+use mon\util\Instance;
 
 /**
  * JWT权限控制
  *
+ * @author Mon <985558837@qq.com>
  * @version 1.0.1 减低版本要求为5.6
+ * @version 1.0.2 优化代码
  */
 class Token
 {
-    /**
-     * 单例实现
-     *
-     * @var [type]
-     */
-    protected static $instance;
+    use Instance;
 
     /**
      * 支持的加密方式
      *
-     * @var [type]
+     * @var array
      */
     protected $algs = [
         'HS256' => ['hash_hmac', 'SHA256'],
@@ -34,26 +32,12 @@ class Token
     ];
 
     /**
-     * 获取单例
-     *
-     * @return [type] [description]
-     */
-    public static function instance()
-    {
-        if (is_null(self::$instance)) {
-            self::$instance = new self;
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * 创建签名
      *
      * @param  Payload     $obj     peyload实例
      * @param  string      $key     加密key
      * @param  string      $alg     加密算法
-     * @return [type]               [description]
+     * @return string
      */
     public function create($obj, $key, $alg = 'HS256')
     {
@@ -79,7 +63,8 @@ class Token
      * @param  string $jwt jwt数据
      * @param  string $key 加密key
      * @param  string $alg 加密算法
-     * @return [type]      [description]
+     * @throws JwtException
+     * @return array
      */
     public function check($jwt, $key, $alg = 'HS256')
     {
@@ -129,7 +114,8 @@ class Token
      * @param  string $info JSON信息
      * @param  string $key  加密盐
      * @param  string $alg  加密方式
-     * @return [type]       [description]
+     * @throws JwtException
+     * @return string
      */
     public function sign($info, $key, $alg = 'HS256')
     {
@@ -162,7 +148,8 @@ class Token
      * @param  string $sign 签名信息
      * @param  string $key  加密盐
      * @param  string $alg  加密方式
-     * @return [type]       [description]
+     * @throws JwtException
+     * @return boolean
      */
     public function verfiy($info, $sign, $key, $alg = 'HS256')
     {
@@ -191,8 +178,8 @@ class Token
     /**
      * URL-Base64安全加密
      *
-     * @param  [type] $input [description]
-     * @return [type]        [description]
+     * @param  string $input 加密字符串
+     * @return string
      */
     public function urlsafeB64Encode($input)
     {
@@ -202,8 +189,8 @@ class Token
     /**
      * URL-Base64安全解密
      *
-     * @param  [type] $input [description]
-     * @return [type]        [description]
+     * @param  string $input 解密字符串
+     * @return string
      */
     public function urlsafeB64Decode($input)
     {
@@ -218,7 +205,7 @@ class Token
     /**
      * 获取支持的加密方式
      *
-     * @return [type] [description]
+     * @return array
      */
     public function getAlgs()
     {

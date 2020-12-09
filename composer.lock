@@ -18,13 +18,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/MonGDCH/mon-container/zipball/cae30a0fce957ef1c9df5a4dbe8f2fd46bfee374",
                 "reference": "cae30a0fce957ef1c9df5a4dbe8f2fd46bfee374",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
+                "shasum": ""
             },
             "require": {
                 "php": ">=5.6.0"
@@ -51,29 +45,28 @@
                 "factory",
                 "php"
             ],
+            "support": {
+                "issues": "https://github.com/MonGDCH/mon-container/issues",
+                "source": "https://github.com/MonGDCH/mon-container/tree/1.0.1"
+            },
             "time": "2019-06-24T06:02:58+00:00"
         },
         {
             "name": "mongdch/mon-orm",
-            "version": "v2.1.2",
+            "version": "v2.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/MonGDCH/mon-orm.git",
-                "reference": "526b1c2794b1c51eb4cf734f5756f6eb5b3638f0"
+                "reference": "5b53eb5b5273760c724f12a6ba6a82049f6648b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MonGDCH/mon-orm/zipball/526b1c2794b1c51eb4cf734f5756f6eb5b3638f0",
-                "reference": "526b1c2794b1c51eb4cf734f5756f6eb5b3638f0",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
+                "url": "https://api.github.com/repos/MonGDCH/mon-orm/zipball/5b53eb5b5273760c724f12a6ba6a82049f6648b9",
+                "reference": "5b53eb5b5273760c724f12a6ba6a82049f6648b9",
+                "shasum": ""
             },
             "require": {
+                "ext-pdo": ">=1.0.0",
                 "mongdch/mon-container": "^1.0",
                 "php": ">=5.6.0"
             },
@@ -100,27 +93,25 @@
                 "mysql",
                 "orm"
             ],
-            "time": "2019-11-03T06:17:12+00:00"
+            "support": {
+                "issues": "https://github.com/MonGDCH/mon-orm/issues",
+                "source": "https://github.com/MonGDCH/mon-orm/tree/2.3.1"
+            },
+            "time": "2020-11-20T06:54:30+00:00"
         },
         {
             "name": "mongdch/mon-util",
-            "version": "1.0.3",
+            "version": "1.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/MonGDCH/mon-util.git",
-                "reference": "9c8bcf2724df50685804eb735bb9532d2e5a97f0"
+                "reference": "75139eb2f4e6e190fd23556913e053f9aec1fc66"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MonGDCH/mon-util/zipball/9c8bcf2724df50685804eb735bb9532d2e5a97f0",
-                "reference": "9c8bcf2724df50685804eb735bb9532d2e5a97f0",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
+                "url": "https://api.github.com/repos/MonGDCH/mon-util/zipball/75139eb2f4e6e190fd23556913e053f9aec1fc66",
+                "reference": "75139eb2f4e6e190fd23556913e053f9aec1fc66",
+                "shasum": ""
             },
             "require": {
                 "php": ">=5.6.0"
@@ -129,7 +120,10 @@
             "autoload": {
                 "psr-4": {
                     "mon\\util\\": "src/"
-                }
+                },
+                "files": [
+                    "src/function.php"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -146,7 +140,11 @@
                 "php",
                 "utils"
             ],
-            "time": "2019-06-15T09:56:17+00:00"
+            "support": {
+                "issues": "https://github.com/MonGDCH/mon-util/issues",
+                "source": "https://github.com/MonGDCH/mon-util/tree/1.2.4"
+            },
+            "time": "2020-11-30T05:46:31+00:00"
         }
     ],
     "packages-dev": [],
@@ -158,5 +156,6 @@
     "platform": {
         "php": ">=5.6.0"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.0.0"
 }

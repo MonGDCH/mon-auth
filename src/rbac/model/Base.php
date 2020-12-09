@@ -2,13 +2,16 @@
 
 namespace mon\auth\rbac\model;
 
-use mon\auth\exception\RbacException;
-use mon\auth\rbac\Auth;
 use mon\orm\Model;
+use mon\auth\rbac\Auth;
 use mon\auth\rbac\Validate;
+use mon\auth\exception\RbacException;
 
 /**
  * 模型基类
+ * 
+ * @author Mon <985558837@qq.com>
+ * @version 1.0.1   优化代码
  */
 class Base extends Model
 {
@@ -29,27 +32,38 @@ class Base extends Model
     /**
      * 验证器
      *
-     * @var [type]
+     * @var Validate
      */
     protected $validate;
 
     /**
-     * 构造方法
+     * Auth实例
+     *
+     * @var Auth
      */
-    public function __construct()
+    protected $auth;
+
+    /**
+     * 构造方法
+     *
+     * @param Auth $auth Auth实例
+     */
+    public function __construct(Auth $auth)
     {
-        if (!Auth::instance()->isInit()) {
+        $this->auth = $auth;
+        if (!$this->auth->isInit()) {
             throw new RbacException('RBAC权限控制未初始化');
         }
-        $this->config = Auth::instance()->getConfig('database');
+        $this->config = $this->auth->getConfig('database');
         $this->validate = new Validate;
     }
 
     /**
      * 自动完成update_time字段
      * 
-     * @param [type] $val 默认值
+     * @param mixed $val 默认值
      * @param array  $row 列值
+     * @return integer
      */
     protected function setUpdateTimeAttr($val)
     {
@@ -59,8 +73,9 @@ class Base extends Model
     /**
      * 自动完成create_time字段
      * 
-     * @param [type] $val 默认值
+     * @param mixed $val 默认值
      * @param array  $row 列值
+     * @return integer
      */
     protected function setCreateTimeAttr($val)
     {

@@ -6,6 +6,9 @@ use mon\util\Validate as Vali;
 
 /**
  * RBAC验证器
+ * 
+ * @author Mon <985558837@qq.com>
+ * @version 1.0.1   优化代码
  */
 class Validate extends Vali
 {
@@ -15,26 +18,26 @@ class Validate extends Vali
      * @var array
      */
     public $rule = [
-        'idx'           => 'required|int|min:1',
-        'uid'           => 'required|int|min:1',
-        'gid'           => 'required|int|min:1',
-        'new_gid'       => 'required|int|min:1',
-        'pid'           => 'required|int|min:0',
-        'status'        => 'required|in:1,2',
-        'name'          => 'required|str',
-        'title'         => 'required|str',
-        'rules'         => 'arr|rules',
-        'remark'        => 'str',
-        'offset'        => 'int|min:0',
-        'limit'         => 'int|min:1',
-        'start_time'    => 'timestamp',
-        'end_time'      => 'timestamp',
+        'idx'           => ['required', 'int', 'min:1'],
+        'uid'           => ['required', 'int', 'min:1'],
+        'gid'           => ['required', 'int', 'min:1'],
+        'new_gid'       => ['required', 'int', 'min:1'],
+        'pid'           => ['required', 'int', 'min:0'],
+        'status'        => ['required', 'in:1,2'],
+        'name'          => ['required', 'str'],
+        'title'         => ['required', 'str'],
+        'rules'         => ['arr', 'rules'],
+        'remark'        => ['str'],
+        'offset'        => ['int', 'min:0'],
+        'limit'         => ['int', 'min:1'],
+        'start_time'    => ['timestamp'],
+        'end_time'      => ['timestamp'],
     ];
 
     /**
      * 错误提示信息
      *
-     * @var [type]
+     * @var array
      */
     public $message = [
         'idx'           => 'ID格式错误',
@@ -54,7 +57,7 @@ class Validate extends Vali
     /**
      * 验证场景
      *
-     * @var [type]
+     * @var array
      */
     public $scope = [
         // 绑定用户组
@@ -76,8 +79,8 @@ class Validate extends Vali
     /**
      * 验证规则组数据
      *
-     * @param string $value
-     * @return void
+     * @param array $value
+     * @return boolean
      */
     public function rules($value)
     {

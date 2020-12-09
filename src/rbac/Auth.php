@@ -3,8 +3,6 @@
 namespace mon\auth\rbac;
 
 use mon\util\Instance;
-use mon\auth\rbac\model\Access;
-use mon\auth\rbac\model\Rule;
 use mon\auth\exception\RbacException;
 
 /**
@@ -19,6 +17,7 @@ use mon\auth\exception\RbacException;
  * 3，一个用户可以属于多个用户组(think_auth_group_access表 定义了用户所属用户组)。我们需要设置每个用户组拥有哪些规则(think_auth_group 定义了用户组权限)
  * 
  * @version 1.0.2 优化代码，增加model方法
+ * @version 1.0.3 优化代码，增加model容器，支持同一应用new多个Auth实例
  * @author Mon <985558837@qq.com>
  */
 class Auth
@@ -31,6 +30,34 @@ class Auth
      * @var boolean
      */
     protected $init = false;
+
+    /**
+     * 缓存的模型实例
+     *
+     * @var array
+     */
+    protected $models = [];
+
+    /**
+     * 用户权限列表缓存数据
+     *
+     * @var array
+     */
+    private $auths = [];
+
+    /**
+     * 角色权限节点缓存
+     *
+     * @var array
+     */
+    private $authIds = [];
+
+    /**
+     * 权限规则缓存
+     *
+     * @var array
+     */
+    private $rules = [];
 
     /**
      * 权限DB表默认配置
@@ -70,7 +97,10 @@ class Auth
     ];
 
     /**
-     * 构造方法
+     * 初始化方法
+     *
+     * @param array $config 配置信息
+     * @return Auth
      */
     public function init(array $config)
     {
@@ -95,11 +125,10 @@ class Auth
     /**
      * 设置配置
      *
-     * @param array   $config   设置配置信息
-     * @param boolean $setDb    重置mysql链接配置
-     * @return void
+     * @param array $config 设置配置信息
+     * @return Auth
      */
-    public function setConfig(array $config, $setDb = false)
+    public function setConfig(array $config)
     {
         $this->config = array_merge($this->config, $config);
 
@@ -110,7 +139,7 @@ class Auth
      * 获取配置信息
      *
      * @param string $key   配置索引
-     * @return void
+     * @return mixed
      */
     public function getConfig($key = '')
     {
@@ -127,6 +156,7 @@ class Auth
      * @param  string|array $name     需要验证的规则列表,支持字符串的单个权限规则或索引数组多个权限规则
      * @param  integer 		$uid      认证用户的id
      * @param  boolean 		$relation 如果为 true 表示满足任一条规则即通过验证;如果为 false 则表示需满足所有规则才能通过验证
+     * @throws RbacException
      * @return boolean           	  成功返回true，失败返回false
      */
     public function check($name, $uid, $relation = true)
@@ -172,76 +202,73 @@ class Auth
     /**
      * 获取角色权限节点对应权限
      *
-     * @param  [type] $uid 用户ID
-     * @return [type]      [description]
+     * @param  integer $uid 用户ID
+     * @return array
      */
     public function getAuthIds($uid)
     {
-        static $authIds = [];
-        if (isset($authIds[$uid])) {
-            return $authIds[$uid];
+        if (isset($this->authIds[$uid])) {
+            return $this->authIds[$uid];
         }
         // 获取规则节点
         $ids = [];
-        $groups = Access::instance()->getUserGroup($uid);
+        $groups = $this->model('Access')->getUserGroup($uid);
         foreach ($groups as $v) {
             $ids = array_merge($ids, explode(',', trim($v['rules'], ',')));
         }
-        $authIds[$uid] = array_unique($ids);
-        return $authIds[$uid];
+        $this->authIds[$uid] = array_unique($ids);
+        return $this->authIds[$uid];
     }
 
     /**
      * 获取用户权限规则列表
      *
-     * @param  [type] $uid 用户ID
-     * @return [type]      [description]
+     * @param  integer $uid 用户ID
+     * @return array
      */
     public function getAuthList($uid)
     {
-        static $auths = [];
-        if (isset($auths[$uid])) {
-            return $auths[$uid];
+        if (isset($this->auths[$uid])) {
+            return $this->auths[$uid];
         }
         // 获取规则节点
         $ids = $this->getAuthIds($uid);
         if (empty($ids)) {
-            $auths[$uid] = [];
+            $this->auths[$uid] = [];
             return [];
         }
         $authList = [];
         // 判断是否拥有所有权限
         if (in_array($this->config['admin_mark'], (array) $ids)) {
             $authList[] = $this->config['admin_mark'];
-            $auths[$uid] = $authList;
-            return $auths[$uid];
+            $this->auths[$uid] = $authList;
+            return $this->auths[$uid];
         }
         // 获取权限规则
         $rules = $this->getRule($uid);
         foreach ($rules as $rule) {
             $authList[] = strtolower($rule['name']);
         }
-        $auths[$uid] = array_unique($authList);
+        $this->auths[$uid] = array_unique($authList);
 
-        return $auths[$uid];
+        return $this->auths[$uid];
     }
 
     /**
      * 获取权限规则
      *
-     * @param [type] $uid
-     * @return void
+     * @param integer $uid  用户ID
+     * @return array
      */
     public function getRule($uid)
     {
-        static $rules = [];
-        if (isset($rules[$uid])) {
-            return $rules[$uid];
+        if (isset($this->rules[$uid])) {
+            return $this->rules[$uid];
         }
         // 获取规则节点
         $ids = $this->getAuthIds($uid);
         if (empty($ids)) {
-            $rules[$uid] = [];
+            $this->rules[$uid] = [];
             return [];
         }
         // 构造查询条件
@@ -250,23 +277,30 @@ class Auth
             $map['id'] = ['in', $ids];
         }
         // 获取权限规则
-        $rules[$uid] = Rule::instance()->where($map)->field('id, pid, name, title')->select();
-        return $rules[$uid];
+        $this->rules[$uid] = $this->model('Rule')->where($map)->field('id, pid, name, title')->select();
+        return $this->rules[$uid];
     }
 
     /**
      * 获取模型
      *
-     * @param [type] $name
-     * @return void
+     * @param string $name  名称
+     * @param boolean $cache    是否从缓存中获取
+     * @return \mon\orm\Model
      */
-    public function model($name)
+    public function model($name, $cache = true)
     {
         if (!in_array(strtolower($name), ['access', 'group', 'rule'])) {
-            throw new RbacException('不存在对应RBCK权限模型');
+            throw new RbacException('不存在对应RBAC权限模型');
+        }
+
+        // 获取实例
+        if ($cache && isset($this->models[$name])) {
+            return $this->models[$name];
         }
 
         $class = '\\mon\\auth\\rbac\\model\\' . ucwords($name);
-        return $class::instance();
+        $this->models[$name] = new $class($this);
+        return $this->models[$name];
     }
 }
