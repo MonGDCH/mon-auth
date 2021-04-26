@@ -82,17 +82,17 @@ class Rule extends Base
      */
     public function add(array $option, array $ext = [])
     {
-        $check = $this->validate->scope('rule_add')->data($option)->check();
+        $check = $this->validate()->scope('rule_add')->data($option)->check();
         if ($check !== true) {
-            $this->error = $check;
+            $this->error = $this->validate()->getError();
             return false;
         }
 
         $info = array_merge($ext, [
-            'pid'           => $option['pid'],
-            'title'         => $option['title'],
-            'name'          => $option['name'],
-            'remark'        => isset($option['remark']) ? $option['remark'] : '',
+            'pid'       => $option['pid'],
+            'title'     => $option['title'],
+            'name'      => $option['name'],
+            'remark'    => isset($option['remark']) ? $option['remark'] : '',
         ]);
         $rule_id = $this->save($info, null, true);
         if (!$rule_id) {
@@ -112,9 +112,9 @@ class Rule extends Base
      */
     public function modify(array $option, array $ext = [])
     {
-        $check = $this->validate->scope('rule_modify')->data($option)->check();
+        $check = $this->validate()->scope('rule_modify')->data($option)->check();
         if ($check !== true) {
-            $this->error = $check;
+            $this->error = $this->validate()->getError();
             return false;
         }
 
@@ -140,11 +140,11 @@ class Rule extends Base
 
                 // 更新
                 $info = array_merge($ext, [
-                    'pid'           => $option['pid'],
-                    'title'         => $option['title'],
-                    'name'          => $option['name'],
-                    'remark'        => isset($option['remark']) ? $option['remark'] : '',
-                    'status'        => $option['status'],
+                    'pid'       => $option['pid'],
+                    'title'     => $option['title'],
+                    'name'      => $option['name'],
+                    'remark'    => isset($option['remark']) ? $option['remark'] : '',
+                    'status'    => $option['status'],
                 ]);
                 $save = $this->save($info, ['id' => $idx]);
                 if (!$save) {
@@ -162,11 +162,11 @@ class Rule extends Base
                 try {
                     // 更新规则
                     $info = array_merge($ext, [
-                        'pid'           => $option['pid'],
-                        'title'         => $option['title'],
-                        'name'          => $option['name'],
-                        'remark'        => isset($option['remark']) ? $option['remark'] : '',
-                        'status'        => $option['status'],
+                        'pid'       => $option['pid'],
+                        'title'     => $option['title'],
+                        'name'      => $option['name'],
+                        'remark'    => isset($option['remark']) ? $option['remark'] : '',
+                        'status'    => $option['status'],
                     ]);
                     $save = $this->save($info, ['id' => $idx]);
                     if (!$save) {
@@ -177,7 +177,7 @@ class Rule extends Base
 
                     // 下线后代
                     if (!empty($childrens)) {
-                        $offline = $this->whereIn('id', $childrens)->update(['status' => $option['status'], 'update_time' => $_SERVER['REQUEST_TIME']]);
+                        $offline = $this->whereIn('id', $childrens)->update(['status' => $option['status'], 'update_time' => time()]);
                         if (!$offline) {
                             $this->rollback();
                             $this->error = '修改后代权限规则失败';
@@ -198,10 +198,10 @@ class Rule extends Base
         } else {
             // 未修改状态，直接更新
             $info = array_merge($ext, [
-                'pid'           => $option['pid'],
-                'title'         => $option['title'],
-                'name'          => $option['name'],
-                'remark'        => isset($option['remark']) ? $option['remark'] : '',
+                'pid'       => $option['pid'],
+                'title'     => $option['title'],
+                'name'      => $option['name'],
+                'remark'    => isset($option['remark']) ? $option['remark'] : '',
             ]);
             $save = $this->save($info, ['id' => $idx]);
             if (!$save) {

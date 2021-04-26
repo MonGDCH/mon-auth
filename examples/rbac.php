@@ -17,19 +17,19 @@ $config = ['database' => [
     'port'            => '3306',
 ]];
 
-$auth = Auth::instance();
-$auth->init(['database' => [
-    // 服务器地址
-    'host'            => '127.0.0.1',
-    // 数据库名
-    'database'        => 'test',
-    // 用户名
-    'username'        => 'root',
-    // 密码
-    'password'        => 'root',
-    // 端口
-    'port'            => '3306',
-]]);
+// $auth = Auth::instance();
+// $auth->init(['database' => [
+//     // 服务器地址
+//     'host'            => '127.0.0.1',
+//     // 数据库名
+//     'database'        => 'test',
+//     // 用户名
+//     'username'        => 'root',
+//     // 密码
+//     'password'        => 'root',
+//     // 端口
+//     'port'            => '3306',
+// ]]);
 
 $auth2 = new Auth();
 $auth2->init($config);
@@ -78,10 +78,10 @@ $auth2->init($config);
 // var_dump($auth->model('group')->getError());
 
 // 绑定用户组别
-// $access = $auth->model('access')->bind([
-//     'uid'   => 1,
-//     'gid'   => 2,
-// ]);
+$access = $auth2->model('access')->bind([
+    'uid'   => 10,
+    'gid'   => 12,
+]);
 
 // 修改用户组别
 // $access = $auth->model('access')->modify([
@@ -116,11 +116,16 @@ $auth2->init($config);
 // 校验单个权限
 // $check = Auth::instance()->check('123asda', 1, true);
 // 校验多个权限
-$check = Auth::instance()->check(['123asda', 'aa'], 1, false);
+// $check = Auth::instance()->check(['123asda', 'aa'], 1, false);
 
-var_dump($check);
+// var_dump($check);
 
-var_dump($auth2->check('/admin/sys/auth/group/add', 1));
+// debug($auth2->check('/admin/sys/auth/group/add', 1));
+
+// debug($auth2->getAuthList(2));
+
+debug($access);
+debug($auth2->model('access')->getError());
 
 // 获取RBAC模型
 // $model = Auth::instance()->model('access');

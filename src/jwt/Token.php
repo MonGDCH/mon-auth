@@ -34,9 +34,9 @@ class Token
     /**
      * 创建签名
      *
-     * @param  Payload     $obj     peyload实例
-     * @param  string      $key     加密key
-     * @param  string      $alg     加密算法
+     * @param  Payload $obj  peyload实例
+     * @param  string  $key  加密key
+     * @param  string  $alg  加密算法
      * @return string
      */
     public function create($obj, $key, $alg = 'HS256')

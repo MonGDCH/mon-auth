@@ -11,7 +11,7 @@ use mon\auth\exception\RbacException;
  * 模型基类
  * 
  * @author Mon <985558837@qq.com>
- * @version 1.0.1   优化代码
+ * @version 1.1.0   优化代码
  */
 class Base extends Model
 {
@@ -34,7 +34,7 @@ class Base extends Model
      *
      * @var Validate
      */
-    protected $validate;
+    protected $validate = Validate::class;
 
     /**
      * Auth实例
@@ -55,7 +55,6 @@ class Base extends Model
             throw new RbacException('RBAC权限控制未初始化');
         }
         $this->config = $this->auth->getConfig('database');
-        $this->validate = new Validate;
     }
 
     /**
@@ -67,7 +66,7 @@ class Base extends Model
      */
     protected function setUpdateTimeAttr($val)
     {
-        return $_SERVER['REQUEST_TIME'];
+        return time();
     }
 
     /**
@@ -79,6 +78,6 @@ class Base extends Model
      */
     protected function setCreateTimeAttr($val)
     {
-        return $_SERVER['REQUEST_TIME'];
+        return time();
     }
 }

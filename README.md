@@ -21,6 +21,11 @@ composer require mongdch/mon-auth
 
 #### 版本
 
+#### 1.0.9
+
+* 优化代码，优化依赖
+
+
 ##### 1.0.8
 
 * 优化整体代码

@@ -54,9 +54,9 @@ class Access extends Base
      */
     public function bind(array $option)
     {
-        $check = $this->validate->scope('access_bind')->data($option)->check();
+        $check = $this->validate()->scope('access_bind')->data($option)->check();
         if ($check !== true) {
-            $this->error = $check;
+            $this->error = $this->validate()->getError();
             return false;
         }
 
@@ -83,9 +83,9 @@ class Access extends Base
      */
     public function unbind(array $option)
     {
-        $check = $this->validate->scope('access_unbind')->data($option)->check();
+        $check = $this->validate()->scope('access_unbind')->data($option)->check();
         if ($check !== true) {
-            $this->error = $check;
+            $this->error = $this->validate()->getError();
             return false;
         }
 
@@ -112,9 +112,9 @@ class Access extends Base
      */
     public function modify(array $option)
     {
-        $check = $this->validate->scope('access_modify')->data($option)->check();
+        $check = $this->validate()->scope('access_modify')->data($option)->check();
         if ($check !== true) {
-            $this->error = $check;
+            $this->error = $this->validate()->getError();
             return false;
         }
         if ($option['new_gid'] == $option['gid']) {

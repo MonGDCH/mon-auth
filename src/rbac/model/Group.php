@@ -81,9 +81,9 @@ class Group extends Base
      */
     public function add(array $option, array $ext = [])
     {
-        $check = $this->validate->scope('group_add')->data($option)->check();
+        $check = $this->validate()->scope('group_add')->data($option)->check();
         if ($check !== true) {
-            $this->error = $check;
+            $this->error = $this->validate()->getError();
             return false;
         }
         // 去除重复的规则
@@ -117,9 +117,9 @@ class Group extends Base
      */
     public function modify(array $option, array $ext = [])
     {
-        $check = $this->validate->scope('group_modify')->data($option)->check();
+        $check = $this->validate()->scope('group_modify')->data($option)->check();
         if ($check !== true) {
-            $this->error = $check;
+            $this->error = $this->validate()->getError();
             return false;
         }
         // 获取数据
@@ -214,7 +214,7 @@ class Group extends Base
                     $childrens = Tree::instance()->data($groups)->getChildrenIds($idx);
                     // 下线后代
                     if ($childrens) {
-                        $offline = $this->whereIn('id', $childrens)->update(['status' => $option['status'], 'update_time' => $_SERVER['REQUEST_TIME']]);
+                        $offline = $this->whereIn('id', $childrens)->update(['status' => $option['status'], 'update_time' => time()]);
                         if (!$offline) {
                             $this->rollback();
                             $this->error = '修改后代权限规则失败';
