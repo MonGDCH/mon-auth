@@ -2,9 +2,9 @@
 
 namespace mon\auth\jwt;
 
+use mon\util\Instance;
 use mon\auth\jwt\Payload;
 use mon\auth\exception\JwtException;
-use mon\util\Instance;
 
 /**
  * JWT权限控制

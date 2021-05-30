@@ -5,6 +5,7 @@ namespace mon\auth\rbac\model;
 use mon\util\Tree;
 use mon\util\Instance;
 use mon\auth\rbac\Auth;
+use mon\orm\exception\DbException;
 
 /**
  * 角色组模型
@@ -245,7 +246,7 @@ class Group extends Base
 
             $this->commit();
             return true;
-        } catch (\Exception $e) {
+        } catch (DbException $e) {
             // 回滚事务
             $this->rollback();
             $this->error = '修改角色组信息异常, ' . $e->getMessage();

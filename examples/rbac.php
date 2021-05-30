@@ -1,6 +1,7 @@
 <?php
 
 use mon\auth\rbac\Auth;
+use mon\orm\exception\DbException;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -12,7 +13,7 @@ $config = ['database' => [
     // 用户名
     'username'        => 'root',
     // 密码
-    'password'        => 'root',
+    'password'        => '19930603',
     // 端口
     'port'            => '3306',
 ]];
@@ -34,7 +35,7 @@ $config = ['database' => [
 $auth2 = new Auth();
 $auth2->init($config);
 
-// 新增规则
+// // 新增规则
 // $save = $auth->model('rule')->add([
 //     'title'     => 't',
 //     'name'      => 't7',
@@ -78,10 +79,10 @@ $auth2->init($config);
 // var_dump($auth->model('group')->getError());
 
 // 绑定用户组别
-$access = $auth2->model('access')->bind([
-    'uid'   => 10,
-    'gid'   => 12,
-]);
+// $access = $auth2->model('access')->bind([
+//     'uid'   => 10,
+//     'gid'   => 12,
+// ]);
 
 // 修改用户组别
 // $access = $auth->model('access')->modify([
@@ -120,12 +121,20 @@ $access = $auth2->model('access')->bind([
 
 // var_dump($check);
 
-// debug($auth2->check('/admin/sys/auth/group/add', 1));
+try {
+    debug($auth2->check('/admin/sys/auth/group/add', 3));
+} catch (DbException $e) {
+    debug($e->getMessage());
+    debug($e->getConnection()->getConfig());
+    // debug($e->getLine());
+    // debug($e->getPrevious()->getLine());
+}
+
 
 // debug($auth2->getAuthList(2));
 
-debug($access);
-debug($auth2->model('access')->getError());
+// debug($access);
+// debug($auth2->model('access')->getError());
 
 // 获取RBAC模型
 // $model = Auth::instance()->model('access');

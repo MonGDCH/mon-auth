@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "84db027103742ec55e1ab156a9204cea",
+    "content-hash": "2637d49f43739d67ef17c6a22ae2e2b8",
     "packages": [
         {
             "name": "mongdch/mon-orm",
-            "version": "v2.4.1",
+            "version": "v2.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/MonGDCH/mon-orm.git",
-                "reference": "6a87e779de6c87872e3c3169a98d9acc7ea24084"
+                "reference": "3686537b1b4c70a624334c97bd98137fa4b07058"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MonGDCH/mon-orm/zipball/6a87e779de6c87872e3c3169a98d9acc7ea24084",
-                "reference": "6a87e779de6c87872e3c3169a98d9acc7ea24084",
+                "url": "https://api.github.com/repos/MonGDCH/mon-orm/zipball/3686537b1b4c70a624334c97bd98137fa4b07058",
+                "reference": "3686537b1b4c70a624334c97bd98137fa4b07058",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -57,9 +57,9 @@
             ],
             "support": {
                 "issues": "https://github.com/MonGDCH/mon-orm/issues",
-                "source": "https://github.com/MonGDCH/mon-orm/tree/2.4.1"
+                "source": "https://github.com/MonGDCH/mon-orm/tree/2.4.3"
             },
-            "time": "2021-04-13T10:05:03+00:00"
+            "time": "2021-05-29T15:52:15+00:00"
         },
         {
             "name": "mongdch/mon-util",

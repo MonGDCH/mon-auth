@@ -5,6 +5,7 @@ namespace mon\auth\rbac\model;
 use mon\util\Tree;
 use mon\util\Instance;
 use mon\auth\rbac\Auth;
+use mon\orm\exception\DbException;
 
 /**
  * 权限规则表
@@ -188,7 +189,7 @@ class Rule extends Base
                     // 提交事务
                     $this->commit();
                     return true;
-                } catch (\Exception $e) {
+                } catch (DbException $e) {
                     // 回滚事务
                     $this->rollback();
                     $this->error = '修改规则异常, ' . $e->getMessage();
