@@ -4,6 +4,7 @@ namespace mon\auth\rbac;
 
 use mon\util\Instance;
 use mon\auth\exception\RbacException;
+use mon\orm\Db;
 
 /**
  * 权限控制
@@ -16,9 +17,9 @@ use mon\auth\exception\RbacException;
  *      第三个参数为 false 时表示，用户需要同时具有规则1和规则2的权限。 当第三个参数为 true 时，表示用户值需要具备其中一个条件即可。默认为 true
  * 3，一个用户可以属于多个用户组(think_auth_group_access表 定义了用户所属用户组)。我们需要设置每个用户组拥有哪些规则(think_auth_group 定义了用户组权限)
  * 
+ * @author Mon <985558837@qq.com>
  * @version 1.0.2 优化代码，增加model方法
  * @version 1.0.3 优化代码，增加model容器，支持同一应用new多个Auth实例
- * @author Mon <985558837@qq.com>
  */
 class Auth
 {
@@ -75,6 +76,8 @@ class Auth
         'auth_rule'         => 'auth_rule',
         // 超级管理员权限标志       
         'admin_mark'        => '*',
+        // 断开自动重连
+        'break_reconnect'   => false,
         // 数据库配置              
         'database'          => [
             // 数据库类型
@@ -90,11 +93,9 @@ class Auth
             // 端口
             'port'            => '3306',
             // 数据库编码默认采用utf8
-            'charset'         => 'utf8',
+            'charset'         => 'utf8mb4',
             // 返回结果集类型
-            'result_type'     => \PDO::FETCH_ASSOC,
-            // 断开自动重连
-            'break_reconnect' => false,
+            'result_type'     => \PDO::FETCH_ASSOC
         ],
     ];
 
@@ -108,6 +109,10 @@ class Auth
     {
         if (!empty($config)) {
             $this->config = array_merge($this->config, $config);
+        }
+        // 数据库断线重连
+        if ($this->config['break_reconnect']) {
+            Db::reconnect(true);
         }
         // 标志初始化
         $this->init = true;

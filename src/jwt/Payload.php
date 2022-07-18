@@ -9,7 +9,7 @@ use mon\auth\exception\JwtException;
  * JWT payload 数据
  *
  * @author Mon <985558837@qq.com>
- * @version v1.0.1
+ * @version 1.0.0
  */
 class Payload implements ArrayAccess
 {

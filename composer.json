@@ -1,7 +1,6 @@
 {
     "name": "mongdch/mon-auth",
     "description": "PHP权限控制库",
-    "version": "1.0.10",
     "keywords": [
         "PHP",
         "mon",
