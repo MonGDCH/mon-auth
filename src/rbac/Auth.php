@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace mon\auth\rbac;
 
+use mon\orm\Db;
 use mon\util\Instance;
 use mon\auth\exception\RbacException;
-use mon\orm\Db;
+use mon\orm\Model;
 
 /**
  * 权限控制
@@ -105,7 +108,7 @@ class Auth
      * @param array $config 配置信息
      * @return Auth
      */
-    public function init(array $config)
+    public function init(array $config): Auth
     {
         if (!empty($config)) {
             $this->config = array_merge($this->config, $config);
@@ -124,7 +127,7 @@ class Auth
      *
      * @return boolean
      */
-    public function isInit()
+    public function isInit(): bool
     {
         return $this->init;
     }
@@ -135,7 +138,7 @@ class Auth
      * @param array $config 设置配置信息
      * @return Auth
      */
-    public function setConfig(array $config)
+    public function setConfig(array $config): Auth
     {
         $this->config = array_merge($this->config, $config);
 
@@ -160,13 +163,13 @@ class Auth
     /**
      * 校验权限
      *
-     * @param  string|array $name     需要验证的规则列表,支持字符串的单个权限规则或索引数组多个权限规则
-     * @param  integer 		$uid      认证用户的id
-     * @param  boolean 		$relation 如果为 true 表示满足任一条规则即通过验证;如果为 false 则表示需满足所有规则才能通过验证
+     * @param  string|array     $name     需要验证的规则列表,支持字符串的单个权限规则或索引数组多个权限规则
+     * @param  integer|string   $uid      认证用户的id
+     * @param  boolean 		    $relation 如果为 true 表示满足任一条规则即通过验证;如果为 false 则表示需满足所有规则才能通过验证
      * @throws RbacException
      * @return boolean           	  成功返回true，失败返回false
      */
-    public function check($name, $uid, $relation = true)
+    public function check($name, $uid, $relation = true): bool
     {
         if (!$this->config['auth_on']) {
             return true;
@@ -209,10 +212,10 @@ class Auth
     /**
      * 获取角色权限节点对应权限
      *
-     * @param  integer $uid 用户ID
+     * @param  integer|string $uid 用户ID
      * @return array
      */
-    public function getAuthIds($uid)
+    public function getAuthIds($uid): array
     {
         if (isset($this->authIds[$uid])) {
             return $this->authIds[$uid];
@@ -230,10 +233,10 @@ class Auth
     /**
      * 获取用户权限规则列表
      *
-     * @param  integer $uid 用户ID
+     * @param  integer|string $uid 用户ID
      * @return array
      */
-    public function getAuthList($uid)
+    public function getAuthList($uid): array
     {
         if (isset($this->auths[$uid])) {
             return $this->auths[$uid];
@@ -264,10 +267,10 @@ class Auth
     /**
      * 获取权限规则
      *
-     * @param integer $uid  用户ID
+     * @param integer|string $uid  用户ID
      * @return array
      */
-    public function getRule($uid)
+    public function getRule($uid): array
     {
         if (isset($this->rules[$uid])) {
             return $this->rules[$uid];
@@ -295,7 +298,7 @@ class Auth
      * @param boolean $cache    是否从缓存中获取
      * @return \mon\orm\Model
      */
-    public function model($name, $cache = true)
+    public function model(string $name, bool $cache = true): Model
     {
         if (!in_array(strtolower($name), ['access', 'group', 'rule'])) {
             throw new RbacException('不存在对应RBAC权限模型');

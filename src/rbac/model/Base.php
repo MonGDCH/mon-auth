@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace mon\auth\rbac\model;
 
 use mon\orm\Model;
@@ -64,7 +66,7 @@ class Base extends Model
      * @param array  $row 列值
      * @return integer
      */
-    protected function setUpdateTimeAttr($val)
+    protected function setUpdateTimeAttr(): int
     {
         return time();
     }
@@ -76,7 +78,7 @@ class Base extends Model
      * @param array  $row 列值
      * @return integer
      */
-    protected function setCreateTimeAttr($val)
+    protected function setCreateTimeAttr(): int
     {
         return time();
     }

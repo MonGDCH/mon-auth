@@ -38,11 +38,11 @@ class Group extends Base
     /**
      * 获取角色组信息
      *
-     * @param array $where  where条件
-     * @param string $field 查询字段
-     * @return mixed
+     * @param array $where where条件
+     * @param array $field 查询字段
+     * @return array|false
      */
-    public function getInfo(array $where, $field = '*')
+    public function getInfo(array $where, array $field = ['*'])
     {
         $info = $this->where($where)->field($field)->find();
         if (!$info) {
@@ -54,18 +54,19 @@ class Group extends Base
     }
 
     /**
-     * 获取所有组别信息
+     * 获取组别信息
      *
-     * @param array $option 查询参数
+     * @param array $option 分页参数 
+     * @param array $where  查询条件
      * @return array
      */
-    public function getList(array $option)
+    public function getList(array $option, array $where = []): array
     {
         $page = isset($option['page']) ? intval($option['page']) : 1;
         $limit = isset($option['limit']) ? intval($option['limit']) : 10;
 
-        $list = $this->page($page, $limit)->select();
-        $count = $this->count('id');
+        $list = $this->page($page, $limit)->where($where)->select();
+        $count = $this->where($where)->count('id');
 
         return [
             'list' => $list,
@@ -78,7 +79,7 @@ class Group extends Base
      *
      * @param array $option 组别参数
      * @param array $ext    扩展写入字段
-     * @return mixed
+     * @return integer|false
      */
     public function add(array $option, array $ext = [])
     {
@@ -116,7 +117,7 @@ class Group extends Base
      * @param array $ext    扩展写入字段
      * @return boolean
      */
-    public function modify(array $option, array $ext = [])
+    public function modify(array $option, array $ext = []): bool
     {
         $check = $this->validate()->scope('group_modify')->data($option)->check();
         if ($check !== true) {
@@ -257,11 +258,11 @@ class Group extends Base
     /**
      * 校验子级权限是否越权父级
      *
-     * @param int  $pid     父级组别ID
+     * @param integer|string  $pid  父级组别ID
      * @param array $rules  子级权限或要验证的权限列表
      * @return boolean
      */
-    protected function diffRuleForPid($pid, array $rules)
+    protected function diffRuleForPid($pid, array $rules): bool
     {
         // 存在父级组别，子级组别权限规则必须包含在父级权限规则中
         if ($pid > 0) {
@@ -288,7 +289,7 @@ class Group extends Base
      * @param array|string $checkRule  比较的规则数组
      * @return array    越级的规则
      */
-    protected function diffRule($baseRule, $checkRule)
+    protected function diffRule($baseRule, $checkRule): array
     {
         if (is_string($baseRule)) {
             $baseRule = explode(',', $baseRule);
@@ -317,7 +318,7 @@ class Group extends Base
      * @param array|string $check       比较的规则数组
      * @return array 子级规则数组
      */
-    protected function intersectRule($baseRule, $checkRule)
+    protected function intersectRule($baseRule, $checkRule): array
     {
         if (is_string($baseRule)) {
             $baseRule = explode(',', $baseRule);
@@ -348,7 +349,7 @@ class Group extends Base
      * @param string|array $newRule   新的规则
      * @return boolean
      */
-    protected function modifyRule($baseRule, $newRule)
+    protected function modifyRule($baseRule, $newRule): bool
     {
         // 整理数据成字符串
         if (is_array($baseRule)) {

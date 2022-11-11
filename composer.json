@@ -7,16 +7,18 @@
         "jwt",
         "rbac"
     ],
-    "homepage": "http://blog.gdmon.com/",
+    "homepage": "http://gdmon.com/",
     "license": "MIT",
     "authors": [
         {
-            "name": "MonGDCH",
-            "email": "985558837@qq.com"
+            "name": "mon",
+            "email": "985558837@qq.com",
+            "homepage": "http://www.gdmon.com/",
+            "role": "Developer"
         }
     ],
     "require": {
-        "php": ">=5.6.0",
+        "php": ">=7.2",
         "mongdch/mon-orm": "^2.4",
         "mongdch/mon-util": "^1.3"
     },

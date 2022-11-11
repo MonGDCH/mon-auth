@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace mon\auth\rbac\model;
 
 use mon\util\Instance;
@@ -36,10 +38,10 @@ class Access extends Base
     /**
      * 获取用户所在组别
      *
-     * @param integer $uid  用户ID
+     * @param string|integer $uid  用户ID
      * @return array
      */
-    public function getUserGroup($uid)
+    public function getUserGroup($uid): array
     {
         return $this->table($this->table . ' a')->join($this->auth->getConfig('auth_group') . ' b', 'a.group_id=b.id')
             ->field('a.uid, a.group_id, b.id, b.pid, b.title, b.rules')
@@ -52,7 +54,7 @@ class Access extends Base
      * @param array $option 请求参数
      * @return boolean
      */
-    public function bind(array $option)
+    public function bind(array $option): bool
     {
         $check = $this->validate()->scope('access_bind')->data($option)->check();
         if ($check !== true) {
@@ -81,7 +83,7 @@ class Access extends Base
      * @param array $option 请求参数
      * @return boolean
      */
-    public function unbind(array $option)
+    public function unbind(array $option): bool
     {
         $check = $this->validate()->scope('access_unbind')->data($option)->check();
         if ($check !== true) {
@@ -110,7 +112,7 @@ class Access extends Base
      * @param array $option 请求参数
      * @return boolean
      */
-    public function modify(array $option)
+    public function modify(array $option): bool
     {
         $check = $this->validate()->scope('access_modify')->data($option)->check();
         if ($check !== true) {

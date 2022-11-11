@@ -1,8 +1,8 @@
 <?php
 
-namespace mon\auth\rbac;
+declare(strict_types=1);
 
-use mon\util\Validate as Vali;
+namespace mon\auth\rbac;
 
 /**
  * RBAC验证器
@@ -10,7 +10,7 @@ use mon\util\Validate as Vali;
  * @author Mon <985558837@qq.com>
  * @version 1.0.1   优化代码
  */
-class Validate extends Vali
+class Validate extends \mon\util\Validate
 {
     /**
      * 验证规则
@@ -82,7 +82,7 @@ class Validate extends Vali
      * @param array $value
      * @return boolean
      */
-    public function rules($value)
+    public function rules(array $value): bool
     {
         foreach ($value as $rule) {
             if (!$this->int($rule)) {

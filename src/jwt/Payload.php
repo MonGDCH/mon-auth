@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace mon\auth\jwt;
 
 use ArrayAccess;
@@ -40,7 +42,7 @@ class Payload implements ArrayAccess
      * @param  string $issuer 签发者
      * @return Payload
      */
-    public function setIss($issuer)
+    public function setIss(string $issuer): Payload
     {
         $this->data['iss'] = $issuer;
         return $this;
@@ -51,9 +53,9 @@ class Payload implements ArrayAccess
      *
      * @return string
      */
-    public function getIss()
+    public function getIss(): string
     {
-        return isset($this->data['iss']) ? $this->data['iss'] : null;
+        return isset($this->data['iss']) ? $this->data['iss'] : '';
     }
 
     /**
@@ -62,7 +64,7 @@ class Payload implements ArrayAccess
      * @param  string $issuer 所面向的用户
      * @return Payload
      */
-    public function setSub($sub)
+    public function setSub(string $sub): Payload
     {
         $this->data['sub'] = $sub;
         return $this;
@@ -73,9 +75,9 @@ class Payload implements ArrayAccess
      *
      * @return string
      */
-    public function getSub()
+    public function getSub(): string
     {
-        return isset($this->data['sub']) ? $this->data['sub'] : null;
+        return isset($this->data['sub']) ? $this->data['sub'] : '';
     }
 
     /**
@@ -84,7 +86,7 @@ class Payload implements ArrayAccess
      * @param string $aud 接受者
      * @return Payload
      */
-    public function setAud($aud)
+    public function setAud(string $aud): Payload
     {
         $this->data['aud'] = $aud;
         return $this;
@@ -95,9 +97,9 @@ class Payload implements ArrayAccess
      *
      * @return string
      */
-    public function getAud()
+    public function getAud(): string
     {
-        return isset($this->data['aud']) ? $this->data['aud'] : null;
+        return isset($this->data['aud']) ? $this->data['aud'] : '';
     }
 
     /**
@@ -106,7 +108,7 @@ class Payload implements ArrayAccess
      * @param string $jti web-token提供唯一标识
      * @return Payload
      */
-    public function setJti($jti)
+    public function setJti(string $jti): Payload
     {
         $this->data['jti'] = $jti;
         return $this;
@@ -117,9 +119,9 @@ class Payload implements ArrayAccess
      *
      * @return string
      */
-    public function getJti()
+    public function getJti(): string
     {
-        return isset($this->data['jti']) ? $this->data['jti'] : null;
+        return isset($this->data['jti']) ? $this->data['jti'] : '';
     }
 
     /**
@@ -128,7 +130,7 @@ class Payload implements ArrayAccess
      * @param array $ext 扩展数据
      * @return Payload
      */
-    public function setExt(array $ext)
+    public function setExt(array $ext): Payload
     {
         $this->data['ext'] = $ext;
         return $this;
@@ -139,9 +141,9 @@ class Payload implements ArrayAccess
      *
      * @return array
      */
-    public function getExt()
+    public function getExt(): array
     {
-        return isset($this->data['ext']) ? $this->data['ext'] : null;
+        return isset($this->data['ext']) ? $this->data['ext'] : [];
     }
 
     /**
@@ -150,7 +152,7 @@ class Payload implements ArrayAccess
      * @param integer $exp 有效时间
      * @return Payload
      */
-    public function setExp($exp)
+    public function setExp(int $exp): Payload
     {
         $this->exp = $exp;
         return $this;
@@ -161,7 +163,7 @@ class Payload implements ArrayAccess
      *
      * @return integer
      */
-    public function getExp()
+    public function getExp(): int
     {
         return $this->exp;
     }
@@ -172,7 +174,7 @@ class Payload implements ArrayAccess
      * @param integer $nbf 多少秒后生效
      * @return Payload
      */
-    public function setNbf($nbf)
+    public function setNbf(int $nbf): Payload
     {
         $this->nbf = $nbf;
         return $this;
@@ -181,9 +183,9 @@ class Payload implements ArrayAccess
     /**
      * 获取nbf
      *
-     * @return [type] [description]
+     * @return integer
      */
-    public function getNbf()
+    public function getNbf(): int
     {
         return $this->nbf;
     }
@@ -191,9 +193,10 @@ class Payload implements ArrayAccess
     /**
      * 获取payload数据
      *
+     * @throws JwtException
      * @return array
      */
-    public function getData()
+    public function getData(): array
     {
         if (empty($this->data)) {
             throw new JwtException('payload is empty', 4);
@@ -219,7 +222,7 @@ class Payload implements ArrayAccess
      * @param string|array  $value 值
      * @return void
      */
-    public function __set($key, $value)
+    public function __set(string $key, $value): void
     {
         $this->data[$key] = $value;
     }
@@ -230,7 +233,7 @@ class Payload implements ArrayAccess
      * @param  string $key  key值
      * @return mixed
      */
-    public function __get($key)
+    public function __get(string $key)
     {
         return isset($this->data[$key]) ? $this->data[$key] : null;
     }
@@ -241,7 +244,7 @@ class Payload implements ArrayAccess
      * @param  string $offset  key值
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->data[$offset]);
     }
@@ -264,7 +267,7 @@ class Payload implements ArrayAccess
      * @param  mixed $value value值
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->data[$offset] = $value;
     }
@@ -275,7 +278,7 @@ class Payload implements ArrayAccess
      * @param  string $offset key值
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->data[$offset]);
     }

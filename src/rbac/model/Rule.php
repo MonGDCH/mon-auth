@@ -39,10 +39,10 @@ class Rule extends Base
      * 获取规则信息
      *
      * @param array $where  where条件
-     * @param string $field 查询字段
-     * @return mixed
+     * @param array $field 查询字段
+     * @return array|false
      */
-    public function getInfo(array $where, $field = '*')
+    public function getInfo(array $where, array $field = ['*'])
     {
         $info = $this->where($where)->field($field)->find();
         if (!$info) {
@@ -56,16 +56,17 @@ class Rule extends Base
     /**
      * 获取所有规则信息
      *
-     * @param array $option 查询参数
+     * @param array $option 分页参数
+     * @param array $where  查询参数
      * @return array
      */
-    public function getList(array $option)
+    public function getList(array $option, array $where = []): array
     {
         $page = isset($option['page']) ? intval($option['page']) : 1;
         $limit = isset($option['limit']) ? intval($option['limit']) : 10;
 
-        $list = $this->page($page, $limit)->select();
-        $count = $this->count('id');
+        $list = $this->where($where)->page($page, $limit)->select();
+        $count = $this->where($where)->count('id');
 
         return [
             'list' => $list,
@@ -79,7 +80,7 @@ class Rule extends Base
      *
      * @param array $option 规则参数
      * @param array $ext    扩展写入字段
-     * @return mixed
+     * @return integer|false
      */
     public function add(array $option, array $ext = [])
     {
@@ -111,7 +112,7 @@ class Rule extends Base
      * @param array $ext    扩展写入字段
      * @return boolean
      */
-    public function modify(array $option, array $ext = [])
+    public function modify(array $option, array $ext = []): bool
     {
         $check = $this->validate()->scope('rule_modify')->data($option)->check();
         if ($check !== true) {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace mon\auth\jwt;
 
 use mon\util\Instance;
@@ -10,8 +12,7 @@ use mon\auth\exception\JwtException;
  * JWT权限控制
  *
  * @author Mon <985558837@qq.com>
- * @version 1.0.1 减低版本要求为5.6
- * @version 1.0.2 优化代码
+ * @version 2.0.0
  */
 class Token
 {
@@ -37,9 +38,10 @@ class Token
      * @param  Payload $obj  peyload实例
      * @param  string  $key  加密key
      * @param  string  $alg  加密算法
+     * @throws JwtException
      * @return string
      */
-    public function create($obj, $key, $alg = 'HS256')
+    public function create(Payload $obj, string $key, string $alg = 'HS256'): string
     {
         $header = ['typ' => 'JWT', 'alg' => $alg];
         $payload = $obj->getData();
@@ -66,7 +68,7 @@ class Token
      * @throws JwtException
      * @return array
      */
-    public function check($jwt, $key, $alg = 'HS256')
+    public function check(string $jwt, string $key, string $alg = 'HS256'): array
     {
         $ticket = explode('.', $jwt);
         if (count($ticket) != 3) {
@@ -117,7 +119,7 @@ class Token
      * @throws JwtException
      * @return string
      */
-    public function sign($info, $key, $alg = 'HS256')
+    public function sign(string $info, string $key, string $alg = 'HS256'): string
     {
         if (!isset($this->algs[$alg])) {
             throw new JwtException('未定义加密方式', 1);
@@ -151,7 +153,7 @@ class Token
      * @throws JwtException
      * @return boolean
      */
-    public function verfiy($info, $sign, $key, $alg = 'HS256')
+    public function verfiy(string $info, string $sign, string $key, string $alg = 'HS256'): bool
     {
         if (!isset($this->algs[$alg])) {
             throw new JwtException('未定义加密方式', 1);
@@ -181,7 +183,7 @@ class Token
      * @param  string $input 加密字符串
      * @return string
      */
-    public function urlsafeB64Encode($input)
+    public function urlsafeB64Encode(string $input): string
     {
         return str_replace('=', '', strtr(base64_encode($input), '+/', '-_'));
     }
@@ -192,7 +194,7 @@ class Token
      * @param  string $input 解密字符串
      * @return string
      */
-    public function urlsafeB64Decode($input)
+    public function urlsafeB64Decode(string $input): string
     {
         $remainder = strlen($input) % 4;
         if ($remainder) {
@@ -207,7 +209,7 @@ class Token
      *
      * @return array
      */
-    public function getAlgs()
+    public function getAlgs(): array
     {
         return array_keys((array) $this->algs);
     }
