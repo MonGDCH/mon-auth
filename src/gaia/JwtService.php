@@ -55,7 +55,7 @@ class JwtService
      */
     public function __construct()
     {
-        $this->config = array_merge($this->config, Config::instance()->get('jwt', []));
+        $this->config = array_merge($this->config, Config::instance()->get('auth.jwt', []));
     }
 
     /**

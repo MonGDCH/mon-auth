@@ -56,7 +56,7 @@ class RbacService
      */
     public function __construct()
     {
-        $config = Config::instance()->get('rbac', []);
+        $config = Config::instance()->get('auth.rbac', []);
         $this->register($config);
     }
 

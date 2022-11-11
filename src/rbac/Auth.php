@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace mon\auth\rbac;
 
-use mon\orm\Db;
+use mon\orm\Model;
 use mon\util\Instance;
 use mon\auth\exception\RbacException;
-use mon\orm\Model;
 
 /**
  * 权限控制
@@ -79,26 +78,32 @@ class Auth
         'auth_rule'         => 'auth_rule',
         // 超级管理员权限标志       
         'admin_mark'        => '*',
-        // 断开自动重连
-        'break_reconnect'   => false,
         // 数据库配置              
         'database'          => [
-            // 数据库类型
-            'type'            => 'mysql',
+            // 数据库类型，只支持mysql
+            'type'          => 'mysql',
             // 服务器地址
-            'host'            => '127.0.0.1',
+            'host'          => '127.0.0.1',
             // 数据库名
-            'database'        => '',
+            'database'      => '',
             // 用户名
-            'username'        => '',
+            'username'      => '',
             // 密码
-            'password'        => '',
+            'password'      => '',
             // 端口
-            'port'            => '3306',
+            'port'          => '3306',
+            // 数据库连接参数
+            'params'        => [],
             // 数据库编码默认采用utf8
-            'charset'         => 'utf8mb4',
+            'charset'       => 'utf8mb4',
             // 返回结果集类型
-            'result_type'     => \PDO::FETCH_ASSOC
+            'result_type'   => \PDO::FETCH_ASSOC,
+            // 是否开启读写分离
+            'rw_separate'   => false,
+            // 查询数据库连接配置，二维数组随机获取节点覆盖默认配置信息
+            'read'          => [],
+            // 写入数据库连接配置，同上，开启事务后，读取不会调用查询数据库配置
+            'write'         => []
         ],
     ];
 
@@ -108,14 +113,10 @@ class Auth
      * @param array $config 配置信息
      * @return Auth
      */
-    public function init(array $config): Auth
+    public function init(array $config = []): Auth
     {
         if (!empty($config)) {
             $this->config = array_merge($this->config, $config);
-        }
-        // 数据库断线重连
-        if ($this->config['break_reconnect']) {
-            Db::reconnect(true);
         }
         // 标志初始化
         $this->init = true;

@@ -24,8 +24,19 @@ class Install
      *
      * @var array
      */
+    protected static $file_relation = [
+        'gaia/JwtService.php' => 'support/auth/JwtService.php',
+        'gaia/RbacService.php' => 'support/auth/RbacService.php',
+    ];
+
+    /**
+     * 移动的文件
+     *
+     * @var array
+     */
     protected static $dir_relation = [
-        'gaia' => 'support/auth',
+        'gaia/middleware' => 'support/auth/middleware',
+        'gaia/config' => 'config/auth'
     ];
 
     /**
@@ -37,6 +48,11 @@ class Install
     {
         // 创建框架文件
         $source_path = __DIR__ . DIRECTORY_SEPARATOR;
+        // 移动文件
+        foreach (static::$file_relation as $source => $dest) {
+            $sourceFile = $source_path . $source;
+            Plugin::copyFile($sourceFile, $dest, true);
+        }
         // 移动目录
         foreach (static::$dir_relation as $source => $dest) {
             $sourceDir = $source_path . $source;
