@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace app\service;
+namespace support\auth;
 
 use mon\env\Config;
 use mon\util\Instance;
@@ -48,7 +48,7 @@ class RbacService
         // 超级管理员权限标志
         'admin_mark'        => '*',
         // 数据库配置              
-        'database'          => []
+        'database'          => 'default'
     ];
 
     /**
