@@ -39,10 +39,10 @@ class Payload implements ArrayAccess
     /**
      * 设置iss, 签发者
      *
-     * @param  string $issuer 签发者
+     * @param  mixed $issuer 签发者
      * @return Payload
      */
-    public function setIss(string $issuer): Payload
+    public function setIss($issuer): Payload
     {
         $this->data['iss'] = $issuer;
         return $this;
@@ -51,9 +51,9 @@ class Payload implements ArrayAccess
     /**
      * 获取iss
      *
-     * @return string
+     * @return mixed
      */
-    public function getIss(): string
+    public function getIss()
     {
         return isset($this->data['iss']) ? $this->data['iss'] : '';
     }
@@ -61,10 +61,10 @@ class Payload implements ArrayAccess
     /**
      * 设置sub, 所面向的用户
      *
-     * @param  string $issuer 所面向的用户
+     * @param  mixed $issuer 所面向的用户
      * @return Payload
      */
-    public function setSub(string $sub): Payload
+    public function setSub($sub): Payload
     {
         $this->data['sub'] = $sub;
         return $this;
@@ -73,9 +73,9 @@ class Payload implements ArrayAccess
     /**
      * 获取sub
      *
-     * @return string
+     * @return mixed
      */
-    public function getSub(): string
+    public function getSub()
     {
         return isset($this->data['sub']) ? $this->data['sub'] : '';
     }
@@ -83,10 +83,10 @@ class Payload implements ArrayAccess
     /**
      * 设置aud, 接受者
      *
-     * @param string $aud 接受者
+     * @param mixed $aud 接受者
      * @return Payload
      */
-    public function setAud(string $aud): Payload
+    public function setAud($aud): Payload
     {
         $this->data['aud'] = $aud;
         return $this;
@@ -95,9 +95,9 @@ class Payload implements ArrayAccess
     /**
      * 获取Aud
      *
-     * @return string
+     * @return mixed
      */
-    public function getAud(): string
+    public function getAud()
     {
         return isset($this->data['aud']) ? $this->data['aud'] : '';
     }
@@ -105,10 +105,10 @@ class Payload implements ArrayAccess
     /**
      * 设置jti, web-token提供唯一标识
      *
-     * @param string $jti web-token提供唯一标识
+     * @param mixed $jti web-token提供唯一标识
      * @return Payload
      */
-    public function setJti(string $jti): Payload
+    public function setJti($jti): Payload
     {
         $this->data['jti'] = $jti;
         return $this;
@@ -117,9 +117,9 @@ class Payload implements ArrayAccess
     /**
      * 获取jti
      *
-     * @return string
+     * @return mixed
      */
-    public function getJti(): string
+    public function getJti()
     {
         return isset($this->data['jti']) ? $this->data['jti'] : '';
     }
