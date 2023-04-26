@@ -8,7 +8,7 @@
 */
 
 return [
-    // 权限开发
+    // 权限开关
     'enable' => true,
     // 加密key
     'key'    => 'lkjghxsoskl)_wo!iqlkdshlkjf',

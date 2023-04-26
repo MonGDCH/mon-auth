@@ -41,4 +41,29 @@ class APIException extends AuthException
      * 签名已过期
      */
     const SIGN_TIME_INVALID = 20003;
+
+    /**
+     * Dao类型不支持
+     */
+    const DAO_NOT_SUPPORT = 40000;
+
+    /**
+     * APPID不存在
+     */
+    const APPID_NOT_FOUND = 40010;
+
+    /**
+     * APPID无效
+     */
+    const APPID_STATUS_ERROR = 40011;
+
+    /**
+     * APPID已过期
+     */
+    const APPID_TIME_INVALID = 40012;
+
+    /**
+     * 权限应用未初始化
+     */
+    const AUTH_NOT_INIT = 90000;
 }

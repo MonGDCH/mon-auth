@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace mon\auth\jwt\drives;
+namespace mon\auth\jwt\driver;
 
 use mon\util\Instance;
-use mon\auth\jwt\drives\Payload;
+use mon\auth\jwt\driver\Payload;
 use mon\auth\exception\JwtException;
 
 /**

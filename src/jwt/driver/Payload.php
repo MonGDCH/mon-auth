@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace mon\auth\jwt\drives;
+namespace mon\auth\jwt\driver;
 
 use ArrayAccess;
 use mon\auth\exception\JwtException;

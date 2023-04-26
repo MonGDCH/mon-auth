@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace mon\auth\api\drives;
+namespace mon\auth\api\driver;
 
 use mon\util\Event;
 use mon\util\Common;

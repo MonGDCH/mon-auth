@@ -6,8 +6,8 @@ namespace mon\auth\jwt;
 
 use mon\util\Event;
 use mon\util\Instance;
-use mon\auth\jwt\drives\Token;
-use mon\auth\jwt\drives\Payload;
+use mon\auth\jwt\driver\Token;
+use mon\auth\jwt\driver\Payload;
 use mon\auth\exception\JwtException;
 
 /**
@@ -21,19 +21,12 @@ class Auth
     use Instance;
 
     /**
-     * 初始化标志
-     *
-     * @var boolean
-     */
-    protected $init = false;
-
-    /**
      * 配置信息
      *
      * @var array
      */
     protected $config = [
-        // 权限开发
+        // 权限开关
         'enable'    => true,
         // 加密key
         'key'       => 'gASQas^(&f654#~!@_+sdaw35',
@@ -60,8 +53,7 @@ class Auth
         if (!empty($config)) {
             $this->config = array_merge($this->config, $config);
         }
-        // 标志初始化
-        $this->init = true;
+
         return $this;
     }
 

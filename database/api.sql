@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `api_sign` (
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '应用名称',
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '描述',
   `status` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '1:有效,0:无效',
-  `expired_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '过期时间',
+  `expired_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '过期时间, 0则不过期',
   `update_time` int(10) unsigned NOT NULL COMMENT '更新时间',
   `create_time` int(10) unsigned NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`),
