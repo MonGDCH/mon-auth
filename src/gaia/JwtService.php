@@ -41,14 +41,14 @@ class JwtService
      *
      * @var string
      */
-    protected $error;
+    protected $error = '';
 
     /**
      * 错误码
      *
      * @var integer
      */
-    protected $errorCode;
+    protected $errorCode = 0;
 
     /**
      * 构造方法

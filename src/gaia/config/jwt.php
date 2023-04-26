@@ -8,6 +8,8 @@
 */
 
 return [
+    // 权限开发
+    'enable' => true,
     // 加密key
     'key'    => 'lkjghxsoskl)_wo!iqlkdshlkjf',
     // 加密算法

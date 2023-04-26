@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace mon\auth\rbac;
 
 use mon\orm\Model;
+use mon\util\Event;
 use mon\util\Instance;
 use mon\auth\exception\RbacException;
 
@@ -46,21 +47,21 @@ class Auth
      *
      * @var array
      */
-    private $auths = [];
+    protected $auths = [];
 
     /**
      * 角色权限节点缓存
      *
      * @var array
      */
-    private $authIds = [];
+    protected $authIds = [];
 
     /**
      * 权限规则缓存
      *
      * @var array
      */
-    private $rules = [];
+    protected $rules = [];
 
     /**
      * 权限DB表默认配置
@@ -69,7 +70,7 @@ class Auth
      */
     protected $config = [
         // 权限开关
-        'auth_on'           => true,
+        'enable'            => true,
         // 用户组数据表名               
         'auth_group'        => 'auth_group',
         // 用户-用户组关系表     
@@ -170,14 +171,16 @@ class Auth
      * @throws RbacException
      * @return boolean           	  成功返回true，失败返回false
      */
-    public function check($name, $uid, $relation = true): bool
+    public function check($name, $uid, bool $relation = true): bool
     {
-        if (!$this->config['auth_on']) {
+        if (!$this->config['enable']) {
             return true;
         }
         // 获取用户需要验证的所有有效规则列表
         $authList = $this->getAuthList($uid);
         if (in_array($this->config['admin_mark'], (array) $authList)) {
+            // 触发rack权限验证事件
+            $this->triggerEvent($uid, $name, 'admin', $authList, $relation);
             // 具备所有权限
             return true;
         }
@@ -188,7 +191,7 @@ class Auth
         } else if (is_array($name)) {
             $name = array_map('strtolower', $name);
         } else {
-            throw new RbacException('不支持的规则类型，只支持string、array类型');
+            throw new RbacException('不支持的规则类型，只支持string、array类型', RbacException::AUTH_RULE_NOT_SUPPORT);
         }
         // 保存验证通过的规则名
         $list = [];
@@ -200,10 +203,14 @@ class Auth
         }
         // 判断验证规则
         if ($relation == true && !empty($list)) {
+            // 触发rack权限验证事件
+            $this->triggerEvent($uid, $name, 'check', $list, $relation);
             return true;
         }
         $diff = array_diff($name, $list);
         if ($relation == false && empty($diff)) {
+            // 触发rack权限验证事件
+            $this->triggerEvent($uid, $name, 'diff', $diff, $relation);
             return true;
         }
 
@@ -302,7 +309,7 @@ class Auth
     public function model(string $name, bool $cache = true): Model
     {
         if (!in_array(strtolower($name), ['access', 'group', 'rule'])) {
-            throw new RbacException('不存在对应RBAC权限模型');
+            throw new RbacException('不存在对应RBAC权限模型', RbacException::AUTH_MODEL_NOT_FOUND);
         }
 
         // 获取实例
@@ -313,5 +320,26 @@ class Auth
         $class = '\\mon\\auth\\rbac\\model\\' . ucwords($name);
         $this->models[$name] = new $class($this);
         return $this->models[$name];
+    }
+
+    /**
+     * 触发验证事件
+     *
+     * @param string|integer $uid   用户ID
+     * @param string|array $name  验证规则名称
+     * @param string $type  验证事件类型
+     * @param array $auth   权限列表
+     * @param boolean $relation 是否需要满足全部规则通过才通过
+     * @return void
+     */
+    protected function triggerEvent($uid, $name, string $type, array $auth,  bool $relation)
+    {
+        Event::instance()->trigger('rbac_check', [
+            'type' => $type,
+            'auth' => $auth,
+            'uid'  => $uid,
+            'name' => $name,
+            'relation' => $relation
+        ]);
     }
 }

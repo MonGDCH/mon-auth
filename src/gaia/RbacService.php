@@ -7,11 +7,11 @@ namespace support\auth;
 use mon\env\Config;
 use mon\util\Instance;
 use mon\auth\rbac\Auth;
+use mon\auth\exception\RbacException;
 
 /**
  * RBAC权限控制服务
  * 
- * @method boolean check(string|array $name, integer|string $uid, boolean $relation = true) 校验权限
  * @method array getAuthIds(integer|string $uid) 获取角色权限节点对应权限
  * @method array getAuthList(integer|string $uid) 获取用户权限规则列表
  * @method array getRule(integer|string $uid) 获取权限规则
@@ -32,13 +32,27 @@ class RbacService
     protected $service;
 
     /**
+     * 错误信息
+     *
+     * @var string
+     */
+    protected $error = '';
+
+    /**
+     * 错误码
+     *
+     * @var integer
+     */
+    protected $errorCode = 0;
+
+    /**
      * 配置信息
      *
      * @var array
      */
     protected $config = [
         // 权限开关
-        'auth_on'           => true,
+        'enable'            => true,
         // 用户组数据表名     
         'auth_group'        => 'auth_group',
         // 用户-用户组关系表
@@ -75,6 +89,58 @@ class RbacService
         }
 
         return $this;
+    }
+
+    /**
+     * 获取错误信息
+     *
+     * @return string
+     */
+    public function getError(): string
+    {
+        $error = $this->error;
+        $this->error = '';
+        return $error;
+    }
+
+    /**
+     * 获取错误码
+     *
+     * @return integer
+     */
+    public function getErrorCode(): int
+    {
+        $code = $this->errorCode;
+        $this->errorCode = 0;
+        return $code;
+    }
+
+
+    /**
+     * 校验权限，重载优化Auth类的check方法
+     *
+     * @param  string|array     $name     需要验证的规则列表,支持字符串的单个权限规则或索引数组多个权限规则
+     * @param  integer|string   $uid      认证用户的id
+     * @param  boolean 		    $relation 如果为 true 表示满足任一条规则即通过验证;如果为 false 则表示需满足所有规则才能通过验证
+     * @throws RbacException
+     * @return boolean           	  成功返回true，失败返回false
+     */
+    public function check($name, $uid, bool $relation = true): bool
+    {
+        try {
+            $check = $this->getService()->check($name, $uid, $relation);
+            if (!$check) {
+                $this->error = '暂无权限';
+                $this->error = -1;
+                return false;
+            }
+
+            return true;
+        } catch (RbacException $e) {
+            $this->error = $e->getMessage();
+            $this->errorCode = $e->getCode();
+            return false;
+        }
     }
 
     /**

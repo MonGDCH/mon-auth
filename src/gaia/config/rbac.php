@@ -9,7 +9,7 @@
 
 return [
     // 权限开关
-    'auth_on'           => true,
+    'enable'            => true,
     // 用户组数据表名     
     'auth_group'        => 'auth_group',
     // 用户-用户组关系表

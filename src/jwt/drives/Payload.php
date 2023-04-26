@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace mon\auth\jwt;
+namespace mon\auth\jwt\drives;
 
 use ArrayAccess;
 use mon\auth\exception\JwtException;
@@ -199,7 +199,7 @@ class Payload implements ArrayAccess
     public function getData(): array
     {
         if (empty($this->data)) {
-            throw new JwtException('payload is empty', 4);
+            throw new JwtException('payload is empty', JwtException::PAYLOAD_NOT_EMPTY);
         }
         $payload = $this->data;
         $payload['iat'] = time();
