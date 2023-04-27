@@ -11,7 +11,7 @@
             "version": "2.5.4",
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.tencent.com/repository/composer/mongdch/mon-orm/2.5.4/mongdch-mon-orm-2.5.4.zip",
+                "url": "https://mirrors.cloud.tencent.com/repository/composer/mongdch/mon-orm/2.5.4/mongdch-mon-orm-2.5.4.zip",
                 "reference": "c8b36434cc1db1ca121d60e0dcc9bfff33c34a37",
                 "shasum": ""
             },
@@ -52,7 +52,7 @@
             "version": "1.4.5",
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.tencent.com/repository/composer/mongdch/mon-util/1.4.5/mongdch-mon-util-1.4.5.zip",
+                "url": "https://mirrors.cloud.tencent.com/repository/composer/mongdch/mon-util/1.4.5/mongdch-mon-util-1.4.5.zip",
                 "reference": "392d868d862d04d2d696183883da2bf283701837",
                 "shasum": ""
             },

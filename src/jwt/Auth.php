@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace mon\auth\jwt;
 
-use mon\util\Event;
 use mon\util\Instance;
 use mon\auth\jwt\driver\Token;
 use mon\auth\jwt\driver\Payload;
@@ -26,8 +25,6 @@ class Auth
      * @var array
      */
     protected $config = [
-        // 权限开关
-        'enable'    => true,
         // 加密key
         'key'       => 'gASQas^(&f654#~!@_+sdaw35',
         // 加密算法
@@ -112,9 +109,6 @@ class Auth
         }
         // 校验时间有效性
         Token::instance()->verify($payload);
-
-        // 触发jwt验证事件，回调方法可通过 throw JwtException 增加自定义的验证方式
-        Event::instance()->trigger('jwt_check', $payload);
 
         return $payload;
     }

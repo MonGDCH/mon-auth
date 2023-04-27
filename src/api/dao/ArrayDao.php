@@ -22,11 +22,11 @@ class ArrayDao implements DaoInterface
     /**
      * 构造方法
      *
-     * @param array $data   数据源
+     * @param array $config   配置信息
      */
-    public function __construct(array $data)
+    public function __construct(array $config)
     {
-        $this->data = $data;
+        $this->data = $config['data'];
     }
 
     /**
@@ -56,5 +56,27 @@ class ArrayDao implements DaoInterface
         }
 
         return $result;
+    }
+
+    /**
+     * 是否有效
+     *
+     * @param array $info   应用信息
+     * @return boolean
+     */
+    public function effect(array $info): bool
+    {
+        return $info['status'] == 1;
+    }
+
+    /**
+     * 是否在有效期内
+     *
+     * @param array $info   应用信息
+     * @return boolean
+     */
+    public function expire(array $info): bool
+    {
+        return ($info['expired_time'] == 0 || $info['expired_time'] > time());
     }
 }

@@ -16,7 +16,7 @@ use mon\auth\exception\APIException;
  * @author Mon <985558837@qq.com>
  * @version 1.0.0
  */
-class AccessToken
+class AccessToken implements DriverInterface
 {
     use Instance;
 

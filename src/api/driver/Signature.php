@@ -15,7 +15,7 @@ use mon\auth\exception\APIException;
  * @author Mon <985558837@qq.com>
  * @version 1.0.0
  */
-class Signature
+class Signature implements DriverInterface
 {
     use Instance;
 
@@ -36,6 +36,16 @@ class Signature
         // secret key名
         'secret'    => 'key'
     ];
+
+    /**
+     * 构造方法
+     *
+     * @param array $field_map  字段名映射
+     */
+    public function __construct(array $field_map = [])
+    {
+        $this->field_map = array_merge($this->field_map, $field_map);
+    }
 
     /**
      * 获取映射的字段值
@@ -60,41 +70,11 @@ class Signature
         return $this;
     }
 
-    // /**
-    //  * 签名有效期
-    //  *
-    //  * @var integer
-    //  */
-    // protected $timeout = 7200;
-
-    // /**
-    //  * 获取签名有效时间
-    //  *
-    //  * @return integer
-    //  */
-    // public function getTimeOut(): int
-    // {
-    //     return $this->timeout;
-    // }
-
-    // /**
-    //  * 设置签名有效时间
-    //  *
-    //  * @param integer $expire
-    //  * @return Signature
-    //  */
-    // public function setTimeOut(int $expire): Signature
-    // {
-    //     $this->timeout = $expire;
-    //     return $this;
-    // }
-
-
     /**
      * 创建签名请求数据
      *
-     * @param string $app_id    app_id
-     * @param string $secret    app_secret
+     * @param string $app_id    应用ID
+     * @param string $secret    应用秘钥
      * @param array $data       需要签名的数据
      * @return array
      */
@@ -108,8 +88,8 @@ class Signature
     /**
      * 验证请求参数签名
      *
-     * @param string $secret    app_secret
-     * @param array $data   请求参数
+     * @param string $secret    应用秘钥
+     * @param array $data       请求参数
      * @return void
      */
     public function check(string $secret, array $data): bool
@@ -122,9 +102,6 @@ class Signature
         if ($sign != $this->getSign($data, $secret)) {
             throw new APIException('API签名错误', APIException::SIGN_VERIFY_FAIL);
         }
-        // if (($data['timestamp'] + $this->getTimeOut()) < time()) {
-        //     throw new APIException('API签名已过期', APIException::SIGN_TIME_INVALID);
-        // }
 
         // 触发AccessToken验证事件，回调方法可通过 throw APIException 增加自定义的验证方式
         Event::instance()->trigger('sign_check', $data);

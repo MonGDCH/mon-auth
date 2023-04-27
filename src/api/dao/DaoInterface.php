@@ -4,6 +4,9 @@ namespace mon\auth\api\dao;
 
 /**
  * Dao业务接口
+ * 
+ * @author Mon <985558837@qq.com>
+ * @version 1.0.0
  */
 interface DaoInterface
 {
@@ -21,4 +24,20 @@ interface DaoInterface
      * @return array
      */
     public function getInfo(string $app_id): array;
+
+    /**
+     * 是否有效
+     *
+     * @param array $info   应用信息
+     * @return boolean
+     */
+    public function effect(array $info): bool;
+
+    /**
+     * 是否在有效期内
+     *
+     * @param array $info   应用信息
+     * @return boolean
+     */
+    public function expire(array $info): bool;
 }

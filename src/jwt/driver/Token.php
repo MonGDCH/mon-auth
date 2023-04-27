@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace mon\auth\jwt\driver;
 
+use mon\util\Event;
 use mon\util\Instance;
 use mon\auth\jwt\driver\Payload;
 use mon\auth\exception\JwtException;
@@ -119,6 +120,9 @@ class Token
         if (isset($payload['exp']) && $payload['exp'] < $now) {
             throw new JwtException('Token签名已过期', JwtException::TOKEN_EXP_ERROR);
         }
+
+        // 触发jwt验证事件，回调方法可通过 throw JwtException 增加自定义的验证方式
+        Event::instance()->trigger('jwt_check', $payload);
 
         return true;
     }

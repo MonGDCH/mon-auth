@@ -69,8 +69,6 @@ class Auth
      * @var array
      */
     protected $config = [
-        // 权限开关
-        'enable'            => true,
         // 用户组数据表名               
         'auth_group'        => 'auth_group',
         // 用户-用户组关系表     
@@ -173,9 +171,6 @@ class Auth
      */
     public function check($name, $uid, bool $relation = true): bool
     {
-        if (!$this->config['enable']) {
-            return true;
-        }
         // 获取用户需要验证的所有有效规则列表
         $authList = $this->getAuthList($uid);
         if (in_array($this->config['admin_mark'], (array) $authList)) {

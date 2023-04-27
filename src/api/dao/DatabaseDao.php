@@ -17,15 +17,14 @@ class DatabaseDao extends Model implements DaoInterface
     /**
      * 构造方法
      *
-     * @param string $table 操作表名
-     * @param array $config 数据库配置
+     * @param array $config 配置信息
      */
-    public function __construct(string $table, array $config)
+    public function __construct(array $config)
     {
         // 定义操作表
-        $this->table = $table;
+        $this->table = $config['table'];
         // 定义数据库配置
-        $this->config = $config;
+        $this->config = $config['config'];
     }
 
     /**
@@ -47,5 +46,27 @@ class DatabaseDao extends Model implements DaoInterface
     public function getInfo(string $app_id): array
     {
         return $this->where(['app_id' => $app_id])->find();
+    }
+
+    /**
+     * 是否有效
+     *
+     * @param array $info   应用信息
+     * @return boolean
+     */
+    public function effect(array $info): bool
+    {
+        return $info['status'] == 1;
+    }
+
+    /**
+     * 是否在有效期内
+     *
+     * @param array $info   应用信息
+     * @return boolean
+     */
+    public function expire(array $info): bool
+    {
+        return ($info['expired_time'] == 0 || $info['expired_time'] > time());
     }
 }

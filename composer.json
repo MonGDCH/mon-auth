@@ -2,10 +2,10 @@
     "name": "mongdch/mon-auth",
     "description": "PHP权限控制库",
     "keywords": [
-        "PHP",
-        "mon",
         "jwt",
-        "rbac"
+        "rbac",
+        "access token",
+        "api signature"
     ],
     "homepage": "http://gdmon.com/",
     "license": "MIT",

@@ -63,6 +63,11 @@ class APIException extends AuthException
     const APPID_TIME_INVALID = 40012;
 
     /**
+     * 签名APPID参数错误
+     */
+    const APPID_PARAMS_FAILD = 40013;
+
+    /**
      * 权限应用未初始化
      */
     const AUTH_NOT_INIT = 90000;

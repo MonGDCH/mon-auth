@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace mon\auth\api;
 
 use mon\util\Instance;
-use mon\auth\api\driver\AccessToken;
+use mon\auth\api\driver\Signature;
 use mon\auth\exception\APIException;
 
 /**
- * AccessToken签名API权限控制
+ * API签名权限控制
  * 
  * @author Mon <985558837@qq.com>
  * @version 1.0.0
  */
-class AccessTokenAuth extends ApiAuth implements ApiAuthInterface
+class SignatureAuth extends ApiAuth implements ApiAuthInterface
 {
     use Instance;
 
@@ -25,18 +25,20 @@ class AccessTokenAuth extends ApiAuth implements ApiAuthInterface
      */
     protected $config = [
         // 字段映射
-        'field'     => [
+        'field' => [
             // app_id字段名
             'app_id'    => 'app_id',
-            // 有效时间字段名
-            'expire'    => 'expire',
-            // 签发的IP
-            'ip'        => 'ip',
+            // 签名字段名
+            'signature' => 'signature',
+            // 签名时间字段名
+            'timestamp' => 'timestamp',
+            // 随机字符串字段名
+            'noncestr'  => 'noncestr',
+            // secret key名
+            'secret'    => 'key'
         ],
         // 有效时间，单位秒
         'expire'    => 3600,
-        // 默认加密盐
-        'salt'      => 'a!khg#-$%iu_ow1.08',
         // 数据源配置
         'dao'      => [
             // 驱动，默认数组驱动
@@ -94,40 +96,39 @@ class AccessTokenAuth extends ApiAuth implements ApiAuthInterface
     /**
      * 获取驱动实例
      *
-     * @return AccessToken
+     * @return Signature
      */
-    public function getDriver(): AccessToken
+    public function getDriver(): Signature
     {
         return $this->driver;
     }
 
     /**
-     * 创建AccessToken
+     * 创建签名请求数据
      *
      * @param string $app_id    应用ID
      * @param string $secret    应用秘钥
-     * @param array $extend     扩展数据
-     * @throws APIException
-     * @return string
+     * @param array $data       需要签名的数据
+     * @return array
      */
-    public function create(string $app_id, string $secret, array $extend = []): string
+    public function create(string $app_id, string $secret, array $data = []): array
     {
         if (!$this->isInit()) {
             throw new APIException('未初始化权限控制', APIException::AUTH_NOT_INIT);
         }
 
-        return $this->getDriver()->create($app_id, $secret, $extend, $this->getConfig('expire'));
+        return $this->getDriver()->create($app_id, $secret, $data);
     }
 
     /**
-     * 结合Dao数据创建AccessToken
+     * 结合Dao数据创建API签名
      *
      * @param string $app_id    应用ID
-     * @param array $extend     扩展数据
+     * @param array $data       需要签名的数据
      * @throws APIException
      * @return string
      */
-    public function createToken(string $app_id, array $extend = []): string
+    public function createToken(string $app_id, array $data = []): array
     {
         if (!$this->isInit()) {
             throw new APIException('未初始化权限控制', APIException::AUTH_NOT_INIT);
@@ -135,45 +136,56 @@ class AccessTokenAuth extends ApiAuth implements ApiAuthInterface
         // 获取应用信息
         $info = $this->getAppInfo($app_id);
 
-        // 创建token
-        return $this->create($app_id, $info['secret'], $extend);
+        // 创建签名
+        return $this->create($app_id, $info['secret'], $data);
     }
 
     /**
-     * 校验AccessToken
+     * 验证签名
      *
-     * @param string $token token
-     * @param string $app_id  应用ID
-     * @param string $secret  应用秘钥
-     * @throws APIException
-     * @return array    token数据
+     * @param string $secret    应用秘钥
+     * @param array $data       签名数据
+     * @return boolean
      */
-    public function check(string $token, string $app_id, string $secret): array
+    public function check(string $secret, array $data): bool
     {
         if (!$this->isInit()) {
             throw new APIException('未初始化权限控制', APIException::AUTH_NOT_INIT);
         }
 
-        return $this->getDriver()->check($token, $app_id, $secret);
+        // 验证签名
+        $this->getDriver()->check($secret, $data);
+
+        // 验证签名有效期
+        $field = $this->getConfig('field');
+        if (($data[$field['timestamp']] + $this->getConfig('expire')) > time()) {
+            throw new APIException('API签名已过期', APIException::SIGN_TIME_INVALID);
+        }
+
+        return true;
     }
 
     /**
-     * 校验AccessToken
+     * 验证签名
      *
-     * @param string $token token
-     * @param string $app_id 应用ID
-     * @return array    token数据
+     * @param array $data   签名数据
+     * @return boolean
      */
-    public function checkToken(string $token, string $app_id): array
+    public function checkToken(array $data): bool
     {
         if (!$this->isInit()) {
             throw new APIException('未初始化权限控制', APIException::AUTH_NOT_INIT);
+        }
+        $field = $this->getConfig('field');
+        $app_id = $data[$field['app_id']] ?? null;
+        if (empty($app_id)) {
+            throw new APIException('无效签名', APIException::APPID_PARAMS_FAILD);
         }
 
         // 获取应用信息
         $info = $this->getAppInfo($app_id);
-
-        return $this->check($token, $app_id, $info['secret']);
+        // 验证签名
+        return $this->check($info['secret'], $data);
     }
 
     /**
@@ -184,6 +196,6 @@ class AccessTokenAuth extends ApiAuth implements ApiAuthInterface
     protected function initDriver()
     {
         // 获取AccessToken实例
-        $this->driver = new AccessToken($this->getConfig('salt'), $this->getConfig('field'));
+        $this->driver = new Signature($this->getConfig('field'));
     }
 }
