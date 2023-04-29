@@ -107,6 +107,18 @@ class Auth
     ];
 
     /**
+     * 构造方法
+     *
+     * @param array $config 配置信息
+     */
+    public function __construct(array $config = [])
+    {
+        if (empty($config)) {
+            $this->init($config);
+        }
+    }
+
+    /**
      * 初始化方法
      *
      * @param array $config 配置信息
@@ -186,7 +198,7 @@ class Auth
         } else if (is_array($name)) {
             $name = array_map('strtolower', $name);
         } else {
-            throw new RbacException('不支持的规则类型，只支持string、array类型', RbacException::AUTH_RULE_NOT_SUPPORT);
+            throw new RbacException('不支持的规则类型，只支持string、array类型', RbacException::RBAC_RULE_NOT_SUPPORT);
         }
         // 保存验证通过的规则名
         $list = [];
@@ -304,7 +316,7 @@ class Auth
     public function model(string $name, bool $cache = true): Model
     {
         if (!in_array(strtolower($name), ['access', 'group', 'rule'])) {
-            throw new RbacException('不存在对应RBAC权限模型', RbacException::AUTH_MODEL_NOT_FOUND);
+            throw new RbacException('不存在对应RBAC权限模型', RbacException::RBAC_MODEL_NOT_FOUND);
         }
 
         // 获取实例

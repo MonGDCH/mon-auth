@@ -134,7 +134,7 @@ abstract class ApiAuth implements ApiAuthInterface
      * @param string $app_id    应用ID
      * @return array
      */
-    protected function getAppInfo(string $app_id): array
+    public function getAppInfo(string $app_id): array
     {
         // 获取应用信息
         $info = $this->getDao()->getInfo($app_id);

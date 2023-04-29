@@ -8,7 +8,8 @@ use mon\util\Tool;
 use mon\util\Event;
 use mon\util\Nbed64;
 use mon\util\Instance;
-use mon\auth\exception\APIException;
+// use mon\auth\exception\APIException;
+use mon\auth\exception\ApiException;
 
 /**
  * 接口 AccessToken 权限控制
@@ -129,7 +130,7 @@ class AccessToken implements DriverInterface
      *
      * @param string $token token
      * @param string $salt  应用秘钥
-     * @throws APIException
+     * @throws ApiException
      * @return array    token数据
      */
     public function parse(string $token, string $secret): array
@@ -142,7 +143,7 @@ class AccessToken implements DriverInterface
         $json = preg_replace('/[[:cntrl:]]/mu', '', $json);
         $data = json_decode($json, true);
         if (json_last_error()) {
-            throw new APIException('无效的AccessToken! ' . json_last_error_msg(), APIException::ACCESS_TOKEN_ERROR);
+            throw new ApiException('无效的AccessToken! ' . json_last_error_msg(), ApiException::ACCESS_TOKEN_ERROR);
         }
 
         return $data;
@@ -154,7 +155,7 @@ class AccessToken implements DriverInterface
      * @param string $token token
      * @param string $app_id  应用ID
      * @param string $secret  应用秘钥
-     * @throws APIException
+     * @throws ApiException
      * @return array    token数据
      */
     public function check(string $token, string $app_id, string $secret): array
@@ -163,11 +164,11 @@ class AccessToken implements DriverInterface
         $data = $this->parse($token, $secret);
         // 校验APP_id
         if ($app_id != $data[$this->getField('app_id')]) {
-            throw new APIException('AppID不匹配', APIException::ACCESS_TOKEN_FAILD);
+            throw new ApiException('AppID不匹配', ApiException::ACCESS_TOKEN_FAILD);
         }
         // 校验有效期
         if (time() > $data[$this->getField('expire')]) {
-            throw new APIException('Token已过期', APIException::ACCESS_TOKEN_INVALID);
+            throw new ApiException('Token已过期', ApiException::ACCESS_TOKEN_INVALID);
         }
 
         // 触发AccessToken验证事件，回调方法可通过 throw APIException 增加自定义的验证方式

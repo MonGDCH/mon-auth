@@ -54,7 +54,7 @@ class Base extends Model
     {
         $this->auth = $auth;
         if (!$this->auth->isInit()) {
-            throw new RbacException('RBAC权限控制未初始化', RbacException::AUTH_INIT_ERROR);
+            throw new RbacException('权限服务未初始化', RbacException::AUTH_INIT_ERROR);
         }
         $this->config = $this->auth->getConfig('database');
     }

@@ -40,6 +40,18 @@ class Auth
     ];
 
     /**
+     * 构造方法
+     *
+     * @param array $config 配置信息
+     */
+    public function __construct(array $config = [])
+    {
+        if (empty($config)) {
+            $this->init($config);
+        }
+    }
+
+    /**
      * 初始化方法
      *
      * @param array $config 配置信息
@@ -100,12 +112,12 @@ class Auth
         // 验证签发单位
         $iss = $this->getConfig('iss');
         if ($iss && (!isset($payload['iss']) || $payload['iss'] != $iss)) {
-            throw new JwtException('Token Iss 异常', JwtException::PAYLOAD_ISS_ERROR);
+            throw new JwtException('Token Iss 异常', JwtException::JWT_PAYLOAD_ISS_ERROR);
         }
         // 验证签发主题
         $sub = $this->getConfig('sub');
         if ($sub && (!isset($payload['sub']) || $payload['sub'] != $sub)) {
-            throw new JwtException('Token Sub 异常', JwtException::PAYLOAD_SUB_ERROR);
+            throw new JwtException('Token Sub 异常', JwtException::JWT_PAYLOAD_SUB_ERROR);
         }
         // 校验时间有效性
         Token::instance()->verify($payload);

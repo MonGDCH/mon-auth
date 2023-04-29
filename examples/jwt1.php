@@ -2,8 +2,8 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use mon\auth\jwt\Token;
-use mon\auth\jwt\Payload;
+use mon\auth\jwt\driver\Token;
+use mon\auth\jwt\driver\Payload;
 use mon\auth\exception\JwtException;
 
 try{

@@ -199,7 +199,7 @@ class Payload implements ArrayAccess
     public function getData(): array
     {
         if (empty($this->data)) {
-            throw new JwtException('payload is empty', JwtException::PAYLOAD_NOT_EMPTY);
+            throw new JwtException('payload is empty', JwtException::JWT_PAYLOAD_NOT_EMPTY);
         }
         $payload = $this->data;
         $payload['iat'] = time();

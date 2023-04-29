@@ -47,18 +47,18 @@ class SignatureAuth extends ApiAuth implements ApiAuthInterface
             'construct'    => [
                 // 数组驱动APP应用数据列表，驱动为 ArrayDao 时有效
                 'data'  => [
-                    [
-                        // 应用ID
-                        'app_id'    => 'TEST123456789',
-                        // 应用秘钥
-                        'secret'    => 'klasjhghaalskfjqwpetoijhxc',
-                        // 应用名称
-                        'name'      => '测试',
-                        // 应用状态，1有效 0无效
-                        'status'    => 1,
-                        // 应用过期时间戳
-                        'expired_time'  => 1234567890,
-                    ]
+                    // [
+                    //     // 应用ID
+                    //     'app_id'    => 'TEST123456789',
+                    //     // 应用秘钥
+                    //     'secret'    => 'klasjhghaalskfjqwpetoijhxc',
+                    //     // 应用名称
+                    //     'name'      => '测试',
+                    //     // 应用状态，1有效 0无效
+                    //     'status'    => 1,
+                    //     // 应用过期时间戳
+                    //     'expired_time'  => 0,
+                    // ]
                 ],
                 // 数据库驱动操作表，驱动为 DatabaseDao 时有效
                 'table'     => 'api_sign',
@@ -114,7 +114,7 @@ class SignatureAuth extends ApiAuth implements ApiAuthInterface
     public function create(string $app_id, string $secret, array $data = []): array
     {
         if (!$this->isInit()) {
-            throw new APIException('未初始化权限控制', APIException::AUTH_NOT_INIT);
+            throw new APIException('未初始化权限控制', APIException::AUTH_INIT_ERROR);
         }
 
         return $this->getDriver()->create($app_id, $secret, $data);
@@ -126,12 +126,12 @@ class SignatureAuth extends ApiAuth implements ApiAuthInterface
      * @param string $app_id    应用ID
      * @param array $data       需要签名的数据
      * @throws APIException
-     * @return string
+     * @return array
      */
     public function createToken(string $app_id, array $data = []): array
     {
         if (!$this->isInit()) {
-            throw new APIException('未初始化权限控制', APIException::AUTH_NOT_INIT);
+            throw new APIException('未初始化权限控制', APIException::AUTH_INIT_ERROR);
         }
         // 获取应用信息
         $info = $this->getAppInfo($app_id);
@@ -150,7 +150,7 @@ class SignatureAuth extends ApiAuth implements ApiAuthInterface
     public function check(string $secret, array $data): bool
     {
         if (!$this->isInit()) {
-            throw new APIException('未初始化权限控制', APIException::AUTH_NOT_INIT);
+            throw new APIException('未初始化权限控制', APIException::AUTH_INIT_ERROR);
         }
 
         // 验证签名
@@ -158,7 +158,7 @@ class SignatureAuth extends ApiAuth implements ApiAuthInterface
 
         // 验证签名有效期
         $field = $this->getConfig('field');
-        if (($data[$field['timestamp']] + $this->getConfig('expire')) > time()) {
+        if (time() > ($data[$field['timestamp']] + $this->getConfig('expire'))) {
             throw new APIException('API签名已过期', APIException::SIGN_TIME_INVALID);
         }
 
@@ -174,7 +174,7 @@ class SignatureAuth extends ApiAuth implements ApiAuthInterface
     public function checkToken(array $data): bool
     {
         if (!$this->isInit()) {
-            throw new APIException('未初始化权限控制', APIException::AUTH_NOT_INIT);
+            throw new APIException('未初始化权限控制', APIException::AUTH_INIT_ERROR);
         }
         $field = $this->getConfig('field');
         $app_id = $data[$field['app_id']] ?? null;

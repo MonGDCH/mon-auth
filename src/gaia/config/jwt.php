@@ -8,14 +8,43 @@
 */
 
 return [
-    // 权限开关
-    'enable' => true,
     // 加密key
-    'key'    => 'lkjghxsoskl)_wo!iqlkdshlkjf',
+    'key'       => 'gASQas^(&f654#~!@_+sdaw35',
     // 加密算法
-    'alg'    => 'HS256',
-    // 有效时间
-    'exp'    => 7200,
+    'alg'       => 'HS256',
     // 签发单位
-    'iss'    => 'mon-gaia',
+    'iss'       => 'Gaia-Auth',
+    // 签发主题
+    'sub'       => 'User-Auth',
+    // 生效时间，签发时间 + nbf
+    'nbf'       => 0,
+    // 有效时间，生效时间 + exp
+    'exp'       => 3600,
+    // 中间件配置
+    'middleware'    => [
+        // 请求头token名
+        'header'        => 'Mon-Auth-Token',
+        // 用户ID(aud)在Request实例的属性名
+        'uid'           => 'uid',
+        // Token数据在Request实例的属性名
+        'jwt'           => 'jwt',
+        // 不存在Token的HTTP状态码
+        'noTokenStauts' => 400,
+        // 错误信息
+        'response'      => [
+            // 是否返回错误信息
+            'enable'        => true,
+            // HTTP状态码
+            'status'        => 403,
+            // 返回数据类型, json 或 xml
+            'dataType'      => 'json',
+            // 是否输出错误信息, enable 为 true 时有效
+            'message'       => false,
+            // 未登录返回状态码
+            'noTokenCode'   => 400,
+            // 未登录错误信息，message 为 true 时有效
+            'noTokenMsg'    => 'Token params invalid!',
+        ],
+
+    ],
 ];

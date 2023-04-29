@@ -6,8 +6,7 @@ namespace support\auth;
 
 use mon\env\Config;
 use mon\util\Instance;
-use mon\auth\jwt\Token;
-use mon\auth\jwt\Payload;
+use mon\auth\jwt\Auth;
 use mon\auth\exception\JwtException;
 
 /**
@@ -21,20 +20,18 @@ class JwtService
     use Instance;
 
     /**
-     * 配置信息
+     * 缓存服务对象
+     *
+     * @var Auth
+     */
+    protected $service;
+
+    /**
+     * Token数据
      *
      * @var array
      */
-    protected $config = [
-        // 加密key
-        'key'   => 'ghmfhkfhgdgweqwqwtuyiuon',
-        // 加密算法
-        'alg'   => 'HS256',
-        // 有效时间
-        'exp'   => 3600,
-        // 签发单位
-        'iss'   => 'Gaia',
-    ];
+    protected $data = [];
 
     /**
      * 错误信息
@@ -51,11 +48,32 @@ class JwtService
     protected $errorCode = 0;
 
     /**
-     * 构造方法
+     * 私有构造方法
      */
-    public function __construct()
+    protected function __construct()
     {
-        $this->config = array_merge($this->config, Config::instance()->get('auth.jwt', []));
+        $config = Config::instance()->get('auth.jwt', []);
+        $this->service = (new Auth)->init($config);
+    }
+
+    /**
+     * 获取权限服务
+     *
+     * @return Auth
+     */
+    public function getService(): Auth
+    {
+        return $this->service;
+    }
+
+    /**
+     * 获取Token数据
+     *
+     * @return array
+     */
+    public function getData(): array
+    {
+        return $this->data;
     }
 
     /**
@@ -83,21 +101,6 @@ class JwtService
     }
 
     /**
-     * 获取配置
-     *
-     * @param string $key   配置名称
-     * @return mixed
-     */
-    public function getConfig(string $key = '')
-    {
-        if (empty($key)) {
-            return $this->config;
-        }
-
-        return $this->config[$key] ?? null;
-    }
-
-    /**
      * 注册配置信息
      *
      * @param array $config
@@ -105,43 +108,36 @@ class JwtService
      */
     public function register(array $config): JwtService
     {
-        $this->config = array_merge($this->config, $config);
+        $this->getService()->init($config);
         return $this;
     }
 
     /**
-     * 创建JWT
+     * 创建Token
      *
-     * @param int|string $uid   面向的用户ID
-     * @param array $ext        扩展的JWT内容
-     * @return string|false
+     * @param integer|string $uid   用户ID
+     * @param array $ext            扩展内容
+     * @param integer|string $jti   TokenID
+     * @throws JwtException
+     * @return string
      */
-    public function create($uid, array $ext = [])
+    public function create($uid, array $ext = [], $jti = null): string
     {
-        try {
-            $build = new Payload;
-            $payload = $build->setIss($this->config['iss'])->setSub($uid)->setExt($ext)->setExp($this->config['exp']);
-
-            $token = new Token;
-            return $token->create($payload, $this->config['key'], $this->config['alg']);
-        } catch (JwtException $e) {
-            $this->error = $e->getMessage();
-            $this->errorCode = $e->getCode();
-            return false;
-        }
+        return $this->getService()->create($uid, $ext, $jti);
     }
 
     /**
-     * 验证JWT
+     * 验证Token
      *
-     * @param string $jwt   JWT字符串
-     * @return array|false
+     * @param string $token Token
+     * @return boolean
      */
-    public function check(string $jwt)
+    public function check(string $token): bool
     {
         try {
-            $token = new Token;
-            return $token->check($jwt, $this->config['key'], $this->config['alg']);
+            // 解析获取Token数据，失败则抛出异常
+            $this->data = $this->getService()->check($token);
+            return true;
         } catch (JwtException $e) {
             $this->error = $e->getMessage();
             $this->errorCode = $e->getCode();

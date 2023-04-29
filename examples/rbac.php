@@ -122,19 +122,19 @@ $auth2->init($config);
 // var_dump($check);
 
 try {
-    debug($auth2->check('/admin/sys/auth/group/add', 3));
+    dd($auth2->check('/admin/sys/auth/group/add', 3));
 } catch (DbException $e) {
-    debug($e->getMessage());
-    debug($e->getConnection()->getConfig());
-    // debug($e->getLine());
-    // debug($e->getPrevious()->getLine());
+    dd($e->getMessage());
+    dd($e->getConnection()->getConfig());
+    // dd($e->getLine());
+    // dd($e->getPrevious()->getLine());
 }
 
 
-// debug($auth2->getAuthList(2));
+// dd($auth2->getAuthList(2));
 
-// debug($access);
-// debug($auth2->model('access')->getError());
+// dd($access);
+// dd($auth2->model('access')->getError());
 
 // 获取RBAC模型
 // $model = Auth::instance()->model('access');
