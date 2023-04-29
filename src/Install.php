@@ -27,6 +27,8 @@ class Install
     protected static $file_relation = [
         'gaia/JwtService.php' => 'support/auth/JwtService.php',
         'gaia/RbacService.php' => 'support/auth/RbacService.php',
+        'gaia/SignatureService.php' => 'support/auth/SignatureService.php',
+        'gaia/AccessTokenService.php' => 'support/auth/AccessTokenService.php',
     ];
 
     /**
