@@ -32,7 +32,7 @@ class SignatureMiddleware implements Middlewareinterface
         // 中间件响应信息配置
         $responseConfig = Config::instance()->get('auth.signature.middleware.response');
         // 验证签名
-        $check = SignatureService::instance()->checkToken($this->post());
+        $check = SignatureService::instance()->checkToken($request->post());
         if (!$check) {
             // 不需要返回错误信息
             if (!$responseConfig['enable']) {

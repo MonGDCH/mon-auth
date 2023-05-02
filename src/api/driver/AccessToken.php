@@ -8,7 +8,6 @@ use mon\util\Tool;
 use mon\util\Event;
 use mon\util\Nbed64;
 use mon\util\Instance;
-// use mon\auth\exception\APIException;
 use mon\auth\exception\ApiException;
 
 /**
@@ -141,6 +140,9 @@ class AccessToken implements DriverInterface
         $json = Nbed64::instance()->stringDecrypt($token, $encrypt_salt);
         // 修正解密后输出的JON格式错误：存在零宽的控制符(Control character error)
         $json = preg_replace('/[[:cntrl:]]/mu', '', $json);
+        if (empty($json)) {
+            throw new ApiException('无效的AccessToken!', ApiException::ACCESS_TOKEN_ERROR);
+        }
         $data = json_decode($json, true);
         if (json_last_error()) {
             throw new ApiException('无效的AccessToken! ' . json_last_error_msg(), ApiException::ACCESS_TOKEN_ERROR);

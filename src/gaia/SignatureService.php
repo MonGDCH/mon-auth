@@ -6,6 +6,7 @@ namespace support\auth;
 
 use mon\env\Config;
 use mon\util\Instance;
+use mon\auth\api\dao\DatabaseDao;
 use mon\auth\exception\APIException;
 use mon\auth\api\SignatureAuth as Auth;
 
@@ -203,10 +204,10 @@ class SignatureService
      */
     protected function parseConfig(array $config): array
     {
-        if ($config['dao']['driver'] = DatabaseDao::class && is_string($config['data']['construct']['config'])) {
+        if ($config['dao']['driver'] == DatabaseDao::class && is_string($config['dao']['construct']['config'])) {
             // 数据库dao驱动，字符串类型的数据库链接配置
-            $dbconfig = Config::instance()->get('database.' . $config['data']['construct']['config'], []);
-            $config['data']['construct']['config'] = $dbconfig;
+            $dbconfig = Config::instance()->get('database.' . $config['dao']['construct']['config'], []);
+            $config['dao']['construct']['config'] = $dbconfig;
         }
 
         return $config;

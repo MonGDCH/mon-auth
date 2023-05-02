@@ -92,18 +92,6 @@ class AccessTokenAuth extends ApiAuth implements ApiAuthInterface
     ];
 
     /**
-     * 构造方法
-     *
-     * @param array $config 配置信息
-     */
-    public function __construct(array $config = [])
-    {
-        if (empty($config)) {
-            $this->init($config);
-        }
-    }
-
-    /**
      * 获取驱动实例
      *
      * @return AccessToken

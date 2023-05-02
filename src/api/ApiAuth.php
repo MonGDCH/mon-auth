@@ -43,6 +43,18 @@ abstract class ApiAuth implements ApiAuthInterface
     protected $config = [];
 
     /**
+     * 构造方法
+     *
+     * @param array $config 配置信息
+     */
+    public function __construct(array $config = [])
+    {
+        if (!empty($config)) {
+            $this->init($config);
+        }
+    }
+
+    /**
      * 初始化
      *
      * @param array $config 配置信息

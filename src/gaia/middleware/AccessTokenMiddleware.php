@@ -38,6 +38,7 @@ class AccessTokenMiddleware implements Middlewareinterface
         $appid = $this->getRequestData($request, $config['appid_name']);
         // Token
         $token = $this->getRequestData($request, $config['token_name']);
+
         // 验证参数
         if (empty($token) || empty($appid)) {
             // 不存在APPID或Token
@@ -67,7 +68,8 @@ class AccessTokenMiddleware implements Middlewareinterface
 
         // 获取Token中的数据
         $data = AccessTokenService::instance()->getData();
-        $request->$config['access_token'] = $data;
+        $key = $config['access_token'];
+        $request->$key = $data;
 
         return $callback($request);
     }

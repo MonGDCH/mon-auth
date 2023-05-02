@@ -19,7 +19,7 @@ return [
     // 数据源配置
     'dao'      => [
         // 驱动，默认数组驱动
-        'driver'    => \mon\auth\api\dao\ArrayDao::class,
+        'driver'    => \mon\auth\api\dao\DatabaseDao::class,
         // 构造方法传入参数
         'construct'    => [
             // 数组驱动APP应用数据列表，driver驱动为 ArrayDao 时有效
