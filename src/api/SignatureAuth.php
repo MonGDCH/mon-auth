@@ -24,6 +24,8 @@ class SignatureAuth extends ApiAuth implements ApiAuthInterface
      * @var array
      */
     protected $config = [
+        // 默认加密盐
+        'salt'  => 'df2!)*&+sdfg_687#@',
         // 字段映射
         'field' => [
             // app_id字段名
@@ -196,6 +198,6 @@ class SignatureAuth extends ApiAuth implements ApiAuthInterface
     protected function initDriver()
     {
         // 获取AccessToken实例
-        $this->driver = new Signature($this->getConfig('field'));
+        $this->driver = new Signature($this->getConfig('salt'), $this->getConfig('field'));
     }
 }

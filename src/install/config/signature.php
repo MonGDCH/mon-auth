@@ -1,6 +1,8 @@
 <?php
 
 return [
+    // 默认加密盐
+    'salt'  => '%s',
     // 字段映射
     'field' => [
         // app_id字段名

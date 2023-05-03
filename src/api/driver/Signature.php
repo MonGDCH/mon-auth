@@ -20,6 +20,13 @@ class Signature implements DriverInterface
     use Instance;
 
     /**
+     * 内置的加密盐
+     *
+     * @var string
+     */
+    protected $encrypt_salt = 'df2!)*&+sdfg_687#@';
+
+    /**
      * 字段名映射
      *
      * @var array
@@ -42,9 +49,21 @@ class Signature implements DriverInterface
      *
      * @param array $field_map  字段名映射
      */
-    public function __construct(array $field_map = [])
+    public function __construct(string $salt = 'df2!)*&+sdfg_687#@', array $field_map = [])
     {
+        $this->encrypt_salt = $salt;
         $this->field_map = array_merge($this->field_map, $field_map);
+    }
+
+    /**
+     * 获取加密秘钥
+     *
+     * @param string $secret
+     * @return string
+     */
+    public function getSecret(string $secret): string
+    {
+        return $this->encrypt_salt . $secret;
     }
 
     /**
@@ -142,7 +161,7 @@ class Signature implements DriverInterface
         ksort($data);
         $string = http_build_query($data);
         // 签名步骤二：在string后加入KEY
-        $string = $string . "&{$key}=" . $secret;
+        $string = $string . "&{$key}=" . $this->getSecret($secret);
         // 签名步骤三：md5加密
         $string = md5($string);
         // 签名步骤四：所有字符转为大写

@@ -9,7 +9,7 @@
 
 return [
     // 加密key
-    'key'       => 'gASQas^(&f654#~!@_+sdaw35',
+    'key'       => '%s',
     // 加密算法
     'alg'       => 'HS256',
     // 签发单位
@@ -44,7 +44,6 @@ return [
             'noTokenCode'   => 400,
             // 未登录错误信息，message 为 true 时有效
             'noTokenMsg'    => 'Token params invalid!',
-        ],
-
+        ]
     ],
 ];

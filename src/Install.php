@@ -25,10 +25,10 @@ class Install
      * @var array
      */
     protected static $file_relation = [
-        'gaia/JwtService.php' => 'support/auth/JwtService.php',
-        'gaia/RbacService.php' => 'support/auth/RbacService.php',
-        'gaia/SignatureService.php' => 'support/auth/SignatureService.php',
-        'gaia/AccessTokenService.php' => 'support/auth/AccessTokenService.php',
+        'install/JwtService.php' => 'support/auth/JwtService.php',
+        'install/RbacService.php' => 'support/auth/RbacService.php',
+        'install/SignatureService.php' => 'support/auth/SignatureService.php',
+        'install/AccessTokenService.php' => 'support/auth/AccessTokenService.php',
     ];
 
     /**
@@ -37,8 +37,8 @@ class Install
      * @var array
      */
     protected static $dir_relation = [
-        'gaia/middleware' => 'support/auth/middleware',
-        'gaia/config' => 'config/auth'
+        'install/middleware' => 'support/auth/middleware',
+        'install/config' => 'config/auth'
     ];
 
     /**
@@ -46,7 +46,7 @@ class Install
      *
      * @return void
      */
-    public static function install()
+    public static function publish()
     {
         // 创建框架文件
         $source_path = __DIR__ . DIRECTORY_SEPARATOR;
@@ -60,14 +60,5 @@ class Install
             $sourceDir = $source_path . $source;
             Plugin::copydir($sourceDir, $dest, true);
         }
-    }
-
-    /**
-     * 卸载
-     *
-     * @return void
-     */
-    public static function uninstall()
-    {
     }
 }
