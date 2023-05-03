@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `api_sign` (
+CREATE TABLE IF NOT EXISTS `%s` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `app_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '应用ID',
   `secret` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '应用秘钥',

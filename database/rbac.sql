@@ -1,5 +1,5 @@
 
-CREATE TABLE IF NOT EXISTS `auth_access` (
+CREATE TABLE IF NOT EXISTS `%s` (
   `uid` int(10) unsigned NOT NULL COMMENT '用户ID',
   `group_id` int(10) unsigned NOT NULL COMMENT '组别ID',
   `update_time` int(10) unsigned NOT NULL COMMENT '创建时间',
@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `auth_access` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='组别用户关联表';
 
 
-CREATE TABLE IF NOT EXISTS `auth_group` (
+CREATE TABLE IF NOT EXISTS `%s` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '父级ID',
   `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '组名',
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `auth_group` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='权限规则组表';
 
 
-CREATE TABLE IF NOT EXISTS `auth_rule` (
+CREATE TABLE IF NOT EXISTS `%s` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '父级ID',
   `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '规则标题',

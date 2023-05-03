@@ -10,7 +10,7 @@ use mon\console\Output;
 use mon\console\Command;
 
 /**
- * 发布FPM入口文件
+ * 发布文件
  *
  * @author Mon <98555883@qq.com>
  * @version 1.0.0
