@@ -2,7 +2,8 @@
 
 #### 介绍
 
-PHP权限管理类库。
+PHP权限管理类库，包含`Jwt`、`RBAC`、`AccessToken`、`Signature`等权限控制类库。
+
 
 #### 安装使用
 
@@ -12,11 +13,15 @@ PHP权限管理类库。
 composer require mongdch/mon-auth
 ```
 
-2. 如需使用RBAC库，则运行导入database目录下rbac.sql文件到数据库中。按需修改修改增加字段即可。
+2. 如需使用RBAC库，则运行导入database目录下`rbac.sql`文件到数据库中。按需修改修改增加字段即可。
+
+3. 如需使用Mysql版本的`AccessToken`、`Signature`，则运行导入database目录下`api.sql`文件到数据库中，按需修改配置即可
+
 
 #### API文档
 
 - 暂未编写，请通过查看examples目录下的demo，阅读了解更多使用方法。
+
 
 #### Demo
 
@@ -24,8 +29,8 @@ composer require mongdch/mon-auth
 
 ```php
 
-use mon\auth\jwt\Token;
-use mon\auth\jwt\Payload;
+use mon\auth\jwt\driver\Token;
+use mon\auth\jwt\driver\Payload;
 use mon\auth\exception\JwtException;
 
 try{
@@ -41,15 +46,28 @@ try{
 	$payload = $build->setIss('abc')->setSub('def')->setExt(['a' => '123'])->setExp(3600)->setAud('127.0.0.1');
 	// 创建jwt
 	$jwt = $token->create($payload, $key, $alg);
-	var_dump($jwt);
+	dd($jwt);
 
 	// 验证jwt
 	$data = $token->check($jwt, $key, $alg);
-	var_dump($data);
+	dd($data);
 }
 catch (JwtException $e){
-	var_dump('Msg: '.$e->getMessage(), 'Line: '.$e->getLine(), 'Code: '.$e->getCode());
+	dd('Msg: '.$e->getMessage(), 'Line: '.$e->getLine(), 'Code: '.$e->getCode());
 }
+
+```
+
+```php
+
+use mon\auth\jwt\Auth;
+
+$token = Auth::instance()->create(1, ['pm' => 'tch']);
+
+dd($token);
+
+$data = Auth::instance()->check($token);
+dd($data);
 
 ```
 
@@ -99,12 +117,90 @@ debug($check);
 
 ```
 
+3. AccessToken
+
+```php
+
+use mon\util\Event;
+use mon\auth\api\AccessTokenAuth;
+use mon\auth\exception\APIException;
+
+// 初始化
+AccessTokenAuth::instance()->init();
+
+$appid = 'abcdefg';
+$secret = 'asdas234';
+
+// 自定义验证事件
+Event::instance()->listen('access_check', function ($data) {
+    // token数据
+    // dd($data);
+
+    // 抛出异常 APIException 作为验证不通过的标志
+    throw new APIException('自定义验证错误', 0, null, $data);
+});
+
+
+
+$token = AccessTokenAuth::instance()->create($appid, $secret);
+
+dd($token);
+
+try {
+    $decode = AccessTokenAuth::instance()->check($token, $appid, $secret);
+    dd($decode);
+} catch (APIException $e) {
+    dd('验证不通过！' . $e->getMessage() . ' code: ' . $e->getCode());
+    // 异常绑定的数据
+    dd($e->getData());
+}
+
+
+```
+
+4. apiSignature
+
+```php
+
+use mon\auth\api\SignatureAuth;
+
+SignatureAuth::instance()->init();
+
+$appid = 'TEST123456789';
+$secret = 'asdas234';
+
+$data = [
+    'a' => 1,
+    'b' => 'asd',
+    'c' => true,
+];
+
+$tokenData = SignatureAuth::instance()->create($appid, $secret, $data);
+
+dd($tokenData);
+
+
+$check = SignatureAuth::instance()->check($secret, $tokenData);
+
+dd($check);
+
+```
+
+
 #### 版本
+
+> 1.1.2
+
+* 增加`AccessToken`、`ApiSignature`权限控制
+* 重构逻辑代码，优化业务
+* 增强对Gaia框架的支持
+
 
 > 1.1.0
 
 * 优化代码，更新依赖
 * 增强对Gaia框架支持
+
 
 > 1.0.11
 
