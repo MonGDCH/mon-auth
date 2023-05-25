@@ -21,6 +21,41 @@ use mon\http\interfaces\Middlewareinterface;
 class SignatureMiddleware implements Middlewareinterface
 {
     /**
+     * 配置信息
+     *
+     * @var array
+     */
+    protected $config = [];
+
+    /**
+     * 构造方法
+     */
+    public function __construct()
+    {
+        $this->config = array_merge($this->config, Config::instance()->get('auth.signature.middleware', []));
+    }
+
+    /**
+     * 获取配置信息
+     *
+     * @return array
+     */
+    public function getConfig(): array
+    {
+        return $this->config;
+    }
+
+    /**
+     * 获取服务
+     *
+     * @return SignatureService
+     */
+    public function getService(): SignatureService
+    {
+        return SignatureService::instance();
+    }
+
+    /**
      * 中间件实现接口
      *
      * @param RequestInterface $request  请求实例
@@ -30,9 +65,9 @@ class SignatureMiddleware implements Middlewareinterface
     public function process(RequestInterface $request, Closure $callback): Response
     {
         // 中间件响应信息配置
-        $responseConfig = Config::instance()->get('auth.signature.middleware.response');
+        $responseConfig = $this->getConfig()['response'];
         // 验证签名
-        $check = SignatureService::instance()->checkToken($request->post());
+        $check = $this->getService()->checkToken($request->post());
         if (!$check) {
             // 不需要返回错误信息
             if (!$responseConfig['enable']) {
@@ -40,9 +75,9 @@ class SignatureMiddleware implements Middlewareinterface
             }
 
             // 错误码
-            $code = SignatureService::instance()->getErrorCode();
+            $code = $this->getService()->getErrorCode();
             // 错误信息
-            $msg = $responseConfig['message'] ? SignatureService::instance()->getError() : '';
+            $msg = $responseConfig['message'] ? $this->getService()->getError() : '';
             return Jump::instance()->result($code, $msg, [], [], $responseConfig['dataType'], $responseConfig['status']);
         }
 

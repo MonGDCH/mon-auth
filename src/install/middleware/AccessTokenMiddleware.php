@@ -21,6 +21,41 @@ use mon\http\interfaces\Middlewareinterface;
 class AccessTokenMiddleware implements Middlewareinterface
 {
     /**
+     * 配置信息
+     *
+     * @var array
+     */
+    protected $config = [];
+
+    /**
+     * 构造方法
+     */
+    public function __construct()
+    {
+        $this->config = array_merge($this->config, Config::instance()->get('auth.accesstoken.middleware', []));
+    }
+
+    /**
+     * 获取配置信息
+     *
+     * @return array
+     */
+    public function getConfig(): array
+    {
+        return $this->config;
+    }
+
+    /**
+     * 获取服务
+     *
+     * @return AccessTokenService
+     */
+    public function getService(): AccessTokenService
+    {
+        return AccessTokenService::instance();
+    }
+
+    /**
      * 中间件实现接口
      *
      * @param RequestInterface $request  请求实例
@@ -30,7 +65,7 @@ class AccessTokenMiddleware implements Middlewareinterface
     public function process(RequestInterface $request, Closure $callback): Response
     {
         // 中间件配置
-        $config = Config::instance()->get('auth.accesstoken.middleware');
+        $config = $this->getConfig();
         // 响应信息配置
         $responseConfig = $config['response'];
 
@@ -52,7 +87,7 @@ class AccessTokenMiddleware implements Middlewareinterface
         }
 
         // 验证签名
-        $check = AccessTokenService::instance()->checkToken($token, $appid);
+        $check = $this->getService()->checkToken($token, $appid);
         if (!$check) {
             // 不需要返回错误信息
             if (!$responseConfig['enable']) {
@@ -60,14 +95,14 @@ class AccessTokenMiddleware implements Middlewareinterface
             }
 
             // 错误码
-            $code = AccessTokenService::instance()->getErrorCode();
+            $code = $this->getService()->getErrorCode();
             // 错误信息
-            $msg = $responseConfig['message'] ? AccessTokenService::instance()->getError() : '';
+            $msg = $responseConfig['message'] ? $this->getService()->getError() : '';
             return Jump::instance()->result($code, $msg, [], [], $responseConfig['dataType'], $responseConfig['status']);
         }
 
         // 获取Token中的数据
-        $data = AccessTokenService::instance()->getData();
+        $data = $this->getService()->getData();
         $key = $config['access_token'];
         $request->$key = $data;
 
