@@ -77,6 +77,10 @@ class Auth
         'auth_rule'         => 'auth_rule',
         // 超级管理员权限标志       
         'admin_mark'        => '*',
+        // 有效的状态值
+        'effective_status'  => 1,
+        // 无效的状态值
+        'invalid_status'    => 0,
         // 数据库配置              
         'database'          => [
             // 数据库类型，只支持mysql

@@ -23,7 +23,7 @@ class Validate extends \mon\util\Validate
         'gid'           => ['required', 'int', 'min:1'],
         'new_gid'       => ['required', 'int', 'min:1'],
         'pid'           => ['required', 'int', 'min:0'],
-        'status'        => ['required', 'in:1,2'],
+        'status'        => ['required', 'int', 'min:0'],
         'name'          => ['required', 'str'],
         'title'         => ['required', 'str'],
         'rules'         => ['arr', 'rules'],

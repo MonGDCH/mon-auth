@@ -84,7 +84,7 @@ class Group extends Base
     public function add(array $option, array $ext = [])
     {
         $check = $this->validate()->scope('group_add')->data($option)->check();
-        if ($check !== true) {
+        if (!$check) {
             $this->error = $this->validate()->getError();
             return false;
         }
@@ -120,7 +120,7 @@ class Group extends Base
     public function modify(array $option, array $ext = []): bool
     {
         $check = $this->validate()->scope('group_modify')->data($option)->check();
-        if ($check !== true) {
+        if (!$check) {
             $this->error = $this->validate()->getError();
             return false;
         }
@@ -173,11 +173,11 @@ class Group extends Base
             // 判断是否修改了状态
             if ($info['status'] != $status) {
                 // 修改为有效
-                if ($status == '1') {
+                if ($status == $this->auth->getConfig('effective_status')) {
                     // 有效则判断当前节点所有祖先节点是否都为有效状态。
                     $parents = Tree::instance()->data($groups)->getParents($idx);
                     foreach ($parents as $parent) {
-                        if ($parent['status'] == 2) {
+                        if ($parent['status'] == $this->auth->getConfig('invalid_status')) {
                             $this->rollback();
                             $this->error = '操作失败(祖先节点存在无效节点)';
                             return false;
@@ -197,7 +197,7 @@ class Group extends Base
                         $this->error = '修改角色组信息失败';
                         return false;
                     }
-                } else if ($status == '2') {
+                } else if ($status == $this->auth->getConfig('invalid_status')) {
                     // 修改为无效状态
                     $modifyInfo = array_merge($ext, [
                         'title'     => $option['title'],

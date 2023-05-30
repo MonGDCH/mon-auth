@@ -85,7 +85,7 @@ class Rule extends Base
     public function add(array $option, array $ext = [])
     {
         $check = $this->validate()->scope('rule_add')->data($option)->check();
-        if ($check !== true) {
+        if (!$check) {
             $this->error = $this->validate()->getError();
             return false;
         }
@@ -94,7 +94,7 @@ class Rule extends Base
             'pid'       => $option['pid'],
             'title'     => $option['title'],
             'name'      => $option['name'],
-            'remark'    => isset($option['remark']) ? $option['remark'] : '',
+            'remark'    => $option['remark'] ?? '',
         ]);
         $rule_id = $this->save($info, null, true);
         if (!$rule_id) {
@@ -115,7 +115,7 @@ class Rule extends Base
     public function modify(array $option, array $ext = []): bool
     {
         $check = $this->validate()->scope('rule_modify')->data($option)->check();
-        if ($check !== true) {
+        if (!$check) {
             $this->error = $this->validate()->getError();
             return false;
         }
@@ -134,7 +134,7 @@ class Rule extends Base
                 // 有效则判断当前节点所有祖先节点是否都为有效状态。
                 $parents = Tree::instance()->data($rules)->getParents($idx);
                 foreach ($parents as $v) {
-                    if ($v['status'] == 2) {
+                    if ($v['status'] == $this->auth->getConfig('invalid_status')) {
                         $this->error = '操作失败(祖先节点存在无效节点)';
                         return false;
                     }
@@ -145,7 +145,7 @@ class Rule extends Base
                     'pid'       => $option['pid'],
                     'title'     => $option['title'],
                     'name'      => $option['name'],
-                    'remark'    => isset($option['remark']) ? $option['remark'] : '',
+                    'remark'    => $option['remark'] ?? '',
                     'status'    => $option['status'],
                 ]);
                 $save = $this->save($info, ['id' => $idx]);
@@ -155,7 +155,7 @@ class Rule extends Base
                 }
 
                 return true;
-            } else if ($status == '2') {
+            } else if ($status == $this->auth->getConfig('invalid_status')) {
                 // 无效，同步将所有后代节点下线
                 $childrens = Tree::instance()->data($rules)->getChildrenIds($idx);
 
@@ -167,7 +167,7 @@ class Rule extends Base
                         'pid'       => $option['pid'],
                         'title'     => $option['title'],
                         'name'      => $option['name'],
-                        'remark'    => isset($option['remark']) ? $option['remark'] : '',
+                        'remark'    => $option['remark'] ?? '',
                         'status'    => $option['status'],
                     ]);
                     $save = $this->save($info, ['id' => $idx]);
@@ -203,7 +203,7 @@ class Rule extends Base
                 'pid'       => $option['pid'],
                 'title'     => $option['title'],
                 'name'      => $option['name'],
-                'remark'    => isset($option['remark']) ? $option['remark'] : '',
+                'remark'    => $option['remark'] ?? '',
             ]);
             $save = $this->save($info, ['id' => $idx]);
             if (!$save) {

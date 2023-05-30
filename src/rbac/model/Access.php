@@ -45,7 +45,7 @@ class Access extends Base
     {
         return $this->table($this->table . ' a')->join($this->auth->getConfig('auth_group') . ' b', 'a.group_id=b.id')
             ->field('a.uid, a.group_id, b.id, b.pid, b.title, b.rules')
-            ->where('a.uid', $uid)->where('b.status', 1)->select();
+            ->where('a.uid', $uid)->where('b.status', $this->auth->getConfig('effective_status'))->select();
     }
 
     /**
@@ -57,7 +57,7 @@ class Access extends Base
     public function bind(array $option): bool
     {
         $check = $this->validate()->scope('access_bind')->data($option)->check();
-        if ($check !== true) {
+        if (!$check) {
             $this->error = $this->validate()->getError();
             return false;
         }
@@ -86,7 +86,7 @@ class Access extends Base
     public function unbind(array $option): bool
     {
         $check = $this->validate()->scope('access_unbind')->data($option)->check();
-        if ($check !== true) {
+        if (!$check) {
             $this->error = $this->validate()->getError();
             return false;
         }
@@ -115,7 +115,7 @@ class Access extends Base
     public function modify(array $option): bool
     {
         $check = $this->validate()->scope('access_modify')->data($option)->check();
-        if ($check !== true) {
+        if (!$check) {
             $this->error = $this->validate()->getError();
             return false;
         }
