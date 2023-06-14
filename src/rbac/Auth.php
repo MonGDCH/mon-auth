@@ -43,27 +43,6 @@ class Auth
     protected $models = [];
 
     /**
-     * 用户权限列表缓存数据
-     *
-     * @var array
-     */
-    protected $auths = [];
-
-    /**
-     * 角色权限节点缓存
-     *
-     * @var array
-     */
-    protected $authIds = [];
-
-    /**
-     * 权限规则缓存
-     *
-     * @var array
-     */
-    protected $rules = [];
-
-    /**
      * 权限DB表默认配置
      *
      * @var array
@@ -236,17 +215,14 @@ class Auth
      */
     public function getAuthIds($uid): array
     {
-        if (isset($this->authIds[$uid])) {
-            return $this->authIds[$uid];
-        }
         // 获取规则节点
         $ids = [];
         $groups = $this->model('Access')->getUserGroup($uid);
         foreach ($groups as $v) {
             $ids = array_merge($ids, explode(',', trim($v['rules'], ',')));
         }
-        $this->authIds[$uid] = array_unique($ids);
-        return $this->authIds[$uid];
+
+        return array_unique($ids);
     }
 
     /**
@@ -257,30 +233,24 @@ class Auth
      */
     public function getAuthList($uid): array
     {
-        if (isset($this->auths[$uid])) {
-            return $this->auths[$uid];
-        }
         // 获取规则节点
         $ids = $this->getAuthIds($uid);
         if (empty($ids)) {
-            $this->auths[$uid] = [];
             return [];
         }
         $authList = [];
         // 判断是否拥有所有权限
         if (in_array($this->config['admin_mark'], (array) $ids)) {
             $authList[] = $this->config['admin_mark'];
-            $this->auths[$uid] = $authList;
-            return $this->auths[$uid];
+            return $authList;
         }
         // 获取权限规则
         $rules = $this->getRule($uid);
         foreach ($rules as $rule) {
             $authList[] = strtolower($rule['name']);
         }
-        $this->auths[$uid] = array_unique($authList);
 
-        return $this->auths[$uid];
+        return array_unique($authList);
     }
 
     /**
@@ -291,13 +261,9 @@ class Auth
      */
     public function getRule($uid): array
     {
-        if (isset($this->rules[$uid])) {
-            return $this->rules[$uid];
-        }
         // 获取规则节点
         $ids = $this->getAuthIds($uid);
         if (empty($ids)) {
-            $this->rules[$uid] = [];
             return [];
         }
         // 构造查询条件
@@ -306,8 +272,8 @@ class Auth
             $map['id'] = ['in', $ids];
         }
         // 获取权限规则
-        $this->rules[$uid] = $this->model('Rule')->where($map)->field('id, pid, name, title')->select();
-        return $this->rules[$uid];
+        $rules = $this->model('Rule')->where($map)->field('id, pid, name, title')->select();
+        return $rules;
     }
 
     /**
